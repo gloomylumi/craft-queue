@@ -29,6 +29,31 @@ const path = require( 'path' );
 app.use( express.static( path.join( __dirname, 'public' ) ) );
 app.use( express.static( path.join( __dirname, '/../', 'node_modules' ) ) );
 
+
+// Authentication with passport-etsy
+const passport = require( 'passport' )
+const EtsyStrategy = require( 'passport-etsy' ).Strategy
+
+passport.use( new EtsyStrategy( {
+    consumerKey: 'YOUR_KEY_GOES_HERE',
+    consumerSecret: 'YOUR_SECRET_GOES_HERE',
+    callbackURL: 'http://localhost:3000/auth/etsy/callback'
+  },
+  function( token, tokenSecret, profile, done ) {
+    User.findOrCreate( {
+      etsyID: profile.id
+    } )
+  }
+) );
+app.get( '/auth/etsy', passport.authenticate( 'etsy', {
+  scope: [ 'listings_r', 'profile_r', 'transactions_r' ]
+} ) );
+app.get( '/auth/etsy/callback',
+  passport.authenticate( 'etsy', {
+    successRedirect: '/',
+    failureRedirect: '/login'
+  } ) );
+
 // const messages = require( './routes/classifieds' );
 //
 // app.use( '/classifieds', messages );
