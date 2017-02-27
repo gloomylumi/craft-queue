@@ -1,0 +1,20 @@
+{
+  "name": "craft-queue-api",
+  "version": "1.0.0",
+  "description": "api for craft queue",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Ari Clark",
+  "license": "MIT",
+  "dependencies": {
+    "cookie-session": "^2.0.0-beta.1",
+    "dotenv": "^4.0.0",
+    "express": "^4.14.1",
+    "knex": "^0.12.7",
+    "oauth": "^0.9.15",
+    "pg": "^6.1.2"
+  }
+}
