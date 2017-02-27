@@ -1,89 +1,136 @@
-'use strict';
+// Get required
+var express = require( 'express' );
+var http = require( 'http' );
+var oauth = require( 'oauth' );
+var session = require( 'express-session' );
 
-const express = require( 'express' );
-const app = express();
+// Instantiate Express
+var app = express();
 
-if ( process.env.NODE_ENV !== 'production' ) {
-  require( 'dotenv' ).config();
-}
+// Setup the Express server
+var server = http.createServer( app );
 
-const cookieParser = require( 'cookie-parser' )
-const bodyParser = require( 'body-parser' )
-const morgan = require( 'morgan' );
+// Initialize Express Session
+app.use( session( {
+  saveUninitialized: true,
+  secret: "1234567890",
+  resave: true
+} ) );
 
-switch ( app.get( 'env' ) ) {
-  case 'development':
-    app.use( morgan( 'dev' ) );
-    break;
+// Add static directory
+app.use( express.static( __dirname + '/public' ) );
 
-  case 'production':
-    app.use( morgan( 'short' ) );
-    break;
-}
+// Set Etsy temporary credentials
+var key = '0g2b7qc51yenv3co98av1m5k';
+var secret = 'zcb8oys17z';
 
-app.use( cookieParser )
+// Set domain and callback
+var domain = "http://localhost:4200";
+var callback = "/callback";
 
-app.use( bodyParser.json() );
-app.use( bodyParser.urlencoded( {
-  extended: false
-} ) )
+// Set permissions scope
+var scope = [ 'listings_r', 'transactions_r', 'profile_r' ]
 
-const passport = require( 'passport' ),
-  OAuthStrategy = require( 'passport-oauth' ).OAuthStrategy;
-app.use( passport.initialize() );
-passport.use( 'etsy', new OAuthStrategy( {
-    requestTokenURL: 'https://openapi.etsy.com/v2/oauth/request_token',
-    accessTokenURL: 'https://openapi.etsy.com/v2/oauth/access_token',
-    userAuthorizationURL: 'https://www.etsy.com/oauth/signin',
-    consumerKey: '0g2b7qc51yenv3co98av1m5k',
-    consumerSecret: 'zcb8oys17z',
-    callbackURL: 'http://localhost:4200/auth/etsy/callback'
-  },
-  function onSuccessfulLogin( token, tokenSecret, profile, done ) {
-    // This is a great place to find or create a user in the database
-    // This function happens once after a successful login
-    User.findOrCreateBy( {
-      etsyID: profile.id
-    } ).then( user => {
+// Instantiate OAuth object
+var oa = new oauth.OAuth(
+  'https://openapi.etsy.com/v2/oauth/request_token?scope=listings_r%20transactions_r%20profile_r%20email_r',
+  'https://openapi.etsy.com/v2/oauth/access_token',
+  key,
+  secret,
+  '1.0A',
+  domain + callback,
+  'HMAC-SHA1'
+);
 
-      // Whatever you pass to `done` gets passed to `serializeUser`
-      done( null, {
-        token,
-        user
-      } );
-    } )
+// Root route
+app.get( '/', function( req, res ) {
+
+  // If session variable has not been initialized
+  if ( !req.session.oauth ) {
+    req.session.oauth = {};
   }
-) );
 
-const path = require( 'path' );
-app.use( express.static( path.join( __dirname, 'src' ) ) );
-app.use( express.static( path.join( __dirname, '/../', 'node_modules' ) ) );
-
-// app.use( '/', require( './routes/auth' ) )
-
-// Redirect the user to the OAuth provider for authentication.  When
-// complete, the provider will redirect the user back to the application at
-//     /auth/provider/callback
-app.get( '/auth/etsy', passport.authenticate( 'etsy' ) );
-
-// The OAuth provider has redirected the user back to the application.
-// Finish the authentication process by attempting to obtain an access
-// token.  If authorization was granted, the user will be logged in.
-// Otherwise, authentication has failed.
-app.get( '/auth/etsy/callback',
-  passport.authenticate( 'etsy', {
-    successRedirect: '/',
-    failureRedirect: '/login'
-  } ) );
-app.use( '*', function( req, res, next ) {
-  res.sendFile( 'index.html', {
-    root: path.join( __dirname, 'src' )
-  } )
-} )
-const port = process.env.PORT || 4200;
-
-app.listen( port, () => {
-  console.log( 'Listening on port', port );
+  // If access token has not been generated
+  if ( !req.session.oauth.access_token ) {
+    res.redirect( '/get-access-token' );
+  } else {
+    test( req, res );
+  }
 } );
 
-module.exports = app;
+// Request OAuth request token, and redirect the user to authorization page
+app.get( '/get-access-token', function( req, res ) {
+
+  console.log( '*** get-access-token ***' )
+
+  oa.getOAuthRequestToken( function( error, token, token_secret, results ) {
+    console.log( req.body );
+    if ( error ) {
+      console.log( error );
+    } else {
+      req.session.oauth.token = token;
+      req.session.oauth.token_secret = token_secret;
+
+      console.log( 'Token: ' + token );
+      console.log( 'Secret: ' + token_secret );
+
+      res.redirect( results[ "login_url" ] );
+    }
+  } );
+
+} );
+
+// Get OAuth access token on callback
+app.get( '/callback', function( req, res ) {
+
+  console.log( '*** callback ***' )
+
+  if ( req.session.oauth ) {
+
+    req.session.oauth.verifier = req.query.oauth_verifier;
+
+    oa.getOAuthAccessToken(
+      req.session.oauth.token,
+      req.session.oauth.token_secret,
+      req.session.oauth.verifier,
+      function( error, token, token_secret, results ) {
+        if ( error ) {
+          console.log( error );
+        } else {
+          req.session.oauth.access_token = token;
+          req.session.oauth.access_token_secret = token_secret;
+
+          console.log( 'Token: ' + token );
+          console.log( 'Secret: ' + token_secret );
+          console.log( 'Verifier: ' + req.session.oauth.verifier );
+
+          test( req, res );
+        }
+      }
+    );
+  }
+} );
+
+// Test authorization by accessing protected resource
+function test( req, res ) {
+  console.log( '*** test ***' );
+
+  oa.getProtectedResource(
+    "https://openapi.etsy.com/v2/users/__SELF__",
+    "GET",
+    req.session.oauth.access_token,
+    req.session.oauth.access_token_secret,
+    function( error, data, response ) {
+      if ( error ) {
+        console.log( error );
+      } else {
+        console.log( data );
+        console.log( '*** SUCCESS! ***' );
+        res.sendFile( __dirname + '/home.html' );
+      }
+    }
+  );
+}
+
+server.listen( 4200 );
+console.log( "listening on http://localhost:4200" );
