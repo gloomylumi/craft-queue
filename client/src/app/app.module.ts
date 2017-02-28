@@ -19,7 +19,6 @@ const appRoutes: Routes = [
   //   redirectTo: '/heroes',
   //   pathMatch: 'full'
   // },
-  { path: '**', component: AppComponent }
 ];
 
 @NgModule({
