@@ -2,21 +2,26 @@
 var express = require( 'express' );
 var http = require( 'http' );
 var oauth = require( 'oauth' );
-var session = require( 'express-session' );
+var session = require( 'cookie-session' );
 
 // Instantiate Express
 var app = express();
+
+require( 'dotenv' ).load();
 
 // Setup the Express server
 var server = http.createServer( app );
 
 // Initialize Express Session
+// app.use( session( {
+//   saveUninitialized: true,
+//   secret: "1234567890",
+//   resave: true
+// } ) );
 app.use( session( {
-  saveUninitialized: true,
-  secret: "1234567890",
-  resave: true
+  name: 'session',
+  keys: [ process.env[ 'SECRET_KEY' ] ]
 } ) );
-
 // Add static directory
 app.use( express.static( __dirname + '/public' ) );
 
@@ -25,7 +30,7 @@ var key = '0g2b7qc51yenv3co98av1m5k';
 var secret = 'zcb8oys17z';
 
 // Set domain and callback
-var domain = "http://localhost:4200";
+var domain = "http://localhost:3000";
 var callback = "/callback";
 
 // Set permissions scope
@@ -126,11 +131,17 @@ function test( req, res ) {
       } else {
         console.log( data );
         console.log( '*** SUCCESS! ***' );
-        res.sendFile( __dirname + '/home.html' );
+        res.sendFile( __dirname + '../client/src/index.html' );
       }
     }
   );
 }
 
-server.listen( 4200 );
-console.log( "listening on http://localhost:4200" );
+app.all( '/*', function( req, res, next ) {
+  res.sendFile( '../client/src/index.html', {
+    root: __dirname + '/'
+  } );
+} );
+
+server.listen( 3000 );
+console.log( "listening on http://localhost:3000" );
