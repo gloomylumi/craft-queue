@@ -6,6 +6,13 @@ import { RouterModule, Routes } from '@angular/router';
 
 
 import { AppComponent } from './app.component';
+import { SplashComponent } from './splash/splash.component';
+import { PublicNavComponent } from './public-nav/public-nav.component';
+import { UserSignUpComponent } from './user-sign-up/user-sign-up.component';
+import { UserLoginComponent } from './user-login/user-login.component';
+import { OrderListComponent } from './order-list/order-list.component';
+import { OrderCardComponent } from './order-card/order-card.component';
+import { MenuDrawerComponent } from './menu-drawer/menu-drawer.component';
 
 const appRoutes: Routes = [
   // { path: 'crisis-center', component: CrisisListComponent },
@@ -23,13 +30,20 @@ const appRoutes: Routes = [
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SplashComponent,
+    PublicNavComponent,
+    UserSignUpComponent,
+    UserLoginComponent,
+    OrderListComponent,
+    OrderCardComponent,
+    MenuDrawerComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule,
-    RouterModule.forRoot(appRoutes)
+    HttpModule
+    // RouterModule.forRoot(appRoutes)
   ],
   providers: [],
   bootstrap: [AppComponent]
