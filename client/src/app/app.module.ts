@@ -22,6 +22,14 @@ const appRoutes: Routes = [
     path: 'welcome',
     component: SplashComponent,
   },
+  {
+    path: 'login',
+    component: UserLoginComponent,
+  },
+  {
+    path: 'signup',
+    component: UserSignUpComponent,
+  },
   { path: '',
     redirectTo: '/welcome',
     pathMatch: 'full'
