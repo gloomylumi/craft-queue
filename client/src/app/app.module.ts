@@ -15,17 +15,17 @@ import { OrderCardComponent } from './order-card/order-card.component';
 import { MenuDrawerComponent } from './menu-drawer/menu-drawer.component';
 
 const appRoutes: Routes = [
+  // {path: '', component: PublicNavComponent}
   // { path: 'crisis-center', component: CrisisListComponent },
   // { path: 'hero/:id',      component: HeroDetailComponent },
-  // {
-  //   path: 'heroes',
-  //   component: HeroListComponent,
-  //   data: { title: 'Heroes List' }
-  // },
-  // { path: '',
-  //   redirectTo: '/heroes',
-  //   pathMatch: 'full'
-  // },
+  {
+    path: 'welcome',
+    component: SplashComponent,
+  },
+  { path: '',
+    redirectTo: '/welcome',
+    pathMatch: 'full'
+  }
 ];
 
 @NgModule({
@@ -42,8 +42,8 @@ const appRoutes: Routes = [
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule
-    // RouterModule.forRoot(appRoutes)
+    HttpModule,
+    RouterModule.forRoot(appRoutes)
   ],
   providers: [],
   bootstrap: [AppComponent]
