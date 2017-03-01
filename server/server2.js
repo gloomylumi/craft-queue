@@ -50,8 +50,8 @@ app.use( express.static( path.join( __dirname, 'public' ) ) );
 const auth = require( './routes/auth' );
 app.use( '/auth', auth )
 
-// const orders = require( './routes/orders' )
-// app.use( '/orders', orders )
+const orders = require( './routes/orders' )
+app.use( '/orders', orders )
 
 
 
