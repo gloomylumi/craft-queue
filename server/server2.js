@@ -2,7 +2,7 @@
 var express = require( 'express' );
 var http = require( 'http' );
 var oauth = require( 'oauth' );
-var session = require( 'cookie-session' );
+var cookieSession = require( 'cookie-session' );
 
 // Instantiate Express
 var app = express();
@@ -18,14 +18,14 @@ var server = http.createServer( app );
 //   secret: "1234567890",
 //   resave: true
 // } ) );
-app.use( session( {
+app.use( cookieSession( {
   name: 'session',
-  keys: [ process.env[ 'SECRET_KEY' ] ]
+  secret: 'supersecret'
 } ) );
 // Add static directory
 app.use( express.static( __dirname + '/public' ) );
 
-// Set Etsy temporary credentials
+// Set Etsy consumer credentials
 var key = '0g2b7qc51yenv3co98av1m5k';
 var secret = 'zcb8oys17z';
 
@@ -34,7 +34,7 @@ var domain = "http://localhost:3000";
 var callback = "/callback";
 
 // Set permissions scope
-var scope = [ 'listings_r', 'transactions_r', 'profile_r' ]
+// var scope = [ 'listings_r', 'transactions_r', 'profile_r' ]
 
 // Instantiate OAuth object
 var oa = new oauth.OAuth(
@@ -52,6 +52,7 @@ app.get( '/', function( req, res ) {
 
   // If session variable has not been initialized
   if ( !req.session.oauth ) {
+    console.log( '*** initializing req.session.oauth ***' );
     req.session.oauth = {};
   }
 
@@ -69,7 +70,7 @@ app.get( '/get-access-token', function( req, res ) {
   console.log( '*** get-access-token ***' )
 
   oa.getOAuthRequestToken( function( error, token, token_secret, results ) {
-    console.log( req.body );
+    console.log( req.session.oauth );
     if ( error ) {
       console.log( error );
     } else {
@@ -109,7 +110,7 @@ app.get( '/callback', function( req, res ) {
           console.log( 'Secret: ' + token_secret );
           console.log( 'Verifier: ' + req.session.oauth.verifier );
 
-          test( req, res );
+          test( req, res )
         }
       }
     );
@@ -128,10 +129,15 @@ function test( req, res ) {
     function( error, data, response ) {
       if ( error ) {
         console.log( error );
+
       } else {
+        if ( !req.session.shop_id ) {
+          req.session.shop_id = ( JSON.parse( data ) ).results[ 0 ].user_id
+          console.log( 'set shop_id to:', ( JSON.parse( data ) ).results[ 0 ].user_id );
+        }
         console.log( data );
         console.log( '*** SUCCESS! ***' );
-        res.sendFile( __dirname + '../client/src/index.html' );
+        res.sendFile( __dirname + '/home.html' );
       }
     }
   );
@@ -145,3 +151,5 @@ app.all( '/*', function( req, res, next ) {
 
 server.listen( 3000 );
 console.log( "listening on http://localhost:3000" );
+
+module.exports = app
