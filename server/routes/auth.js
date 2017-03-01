@@ -12,7 +12,7 @@ var key = '0g2b7qc51yenv3co98av1m5k';
 var secret = 'zcb8oys17z';
 
 // Set domain and callback
-var domain = "http://localhost:3000";
+var domain = "http://localhost:3000/auth";
 var callback = "/callback";
 
 // Set permissions scope
@@ -40,7 +40,7 @@ router.get( '/', function( req, res ) {
 
   // If access token has not been generated
   if ( !req.session.oauth.access_token ) {
-    res.redirect( '/get-access-token' );
+    res.redirect( '/auth/get-access-token' );
   } else {
     test( req, res );
   }
@@ -119,7 +119,7 @@ function test( req, res ) {
         }
         console.log( data );
         console.log( '*** SUCCESS! ***' );
-        res.sendFile( __dirname + '/home.html' );
+        res.send( "Success!" );
       }
     }
   );
