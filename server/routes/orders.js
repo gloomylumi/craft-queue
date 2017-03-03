@@ -7,6 +7,7 @@ const router = express.Router();
 const axios = require( 'axios' )
 const querystring = require( 'querystring' )
 const Order = require( '../helpers/order-helper.js' ).Order
+const Item = require( '../helpers/order-helper.js' ).Item
 const oa = require( '../helpers/auth-helper.js' ).oa
 
 
@@ -101,6 +102,40 @@ router.get( '/listings', function( req, res, next ) {
       } else {
         console.log( JSON.parse( data ) );
         res.send( JSON.parse( data ) )
+      }
+    }
+  )
+} )
+router.get( '/items', function( req, res, next ) {
+  const shop_id = req.session.shop_id
+  let uri = `/shops/${shop_id}/transactions`
+  const paramString = '?' + querystring.stringify( {
+    limit: 75
+  } )
+  oa.getProtectedResource(
+    "https://openapi.etsy.com/v2" + uri + paramString,
+    "GET",
+    req.session.oauth.access_token,
+    req.session.oauth.access_token_secret,
+    function( error, data, response ) {
+      if ( error ) {
+        console.log( error );
+        res.send( error )
+      } else {
+        // console.log( JSON.parse( data ) );
+        // res.send( JSON.parse( data ) )
+        var rawItemsArr = JSON.parse( data ).results
+        var listingIdArr = []
+        var imageListingIdArr = []
+        var itemsTrxData = []
+        rawItemsArr.forEach( function( transaction ) {
+          listingIdArr.push( transaction.listing_id )
+          imageListingIdArr.push( transaction.image_listing_id )
+          let item = new Item( transaction.transaction_id, transaction.listing_id, transaction.receipt_id, transaction.title, transaction.quantity, transaction.price, transaction.variations, transaction.url )
+          itemsTrxData.push( item )
+        } )
+
+        res.send( itemsTrxData )
       }
     }
   )

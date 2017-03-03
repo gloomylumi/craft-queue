@@ -5,7 +5,7 @@ var express = require( 'express' );
 
 
 //temporary connection to front-end
-const cq = 'localhost:4200'
+// const cq = 'localhost:4200'
 
 // Instantiate Express
 var app = express();
