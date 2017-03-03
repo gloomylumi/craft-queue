@@ -19,7 +19,7 @@ var callback = "/callback";
 // var scope = [ 'listings_r', 'transactions_r', 'profile_r' ]
 
 // Instantiate OAuth object
-var oa = new oauth.OAuth(
+let oa = new oauth.OAuth(
   'https://openapi.etsy.com/v2/oauth/request_token?scope=listings_r%20transactions_r%20profile_r%20email_r',
   'https://openapi.etsy.com/v2/oauth/access_token',
   key,
@@ -104,7 +104,7 @@ function test( req, res ) {
   console.log( '*** test ***' );
 
   oa.getProtectedResource(
-    "https://openapi.etsy.com/v2/users/__SELF__",
+    "https://openapi.etsy.com/v2/users/__SELF__/shops",
     "GET",
     req.session.oauth.access_token,
     req.session.oauth.access_token_secret,
@@ -113,15 +113,20 @@ function test( req, res ) {
         console.log( error );
 
       } else {
+        if ( !req.session.user_id ) {
+          req.session.user_id = ( JSON.parse( data ) ).results[ 0 ].user_id
+
+          console.log( 'set user_id to:', ( JSON.parse( data ) ).results[ 0 ].user_id );
+        }
         if ( !req.session.shop_id ) {
-          req.session.shop_id = ( JSON.parse( data ) ).results[ 0 ].user_id
-          console.log( 'set shop_id to:', ( JSON.parse( data ) ).results[ 0 ].user_id );
+          req.session.shop_id = ( JSON.parse( data ) ).results[ 0 ].shop_id
+          console.log( 'set user_id to:', ( JSON.parse( data ) ).results[ 0 ].shop_id );
         }
         console.log( data );
         console.log( '*** SUCCESS! ***' );
         res.send( "Success!" );
       }
     }
-  );
+  )
 }
 module.exports = router

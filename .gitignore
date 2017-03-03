@@ -23,14 +23,15 @@ client/tmp
 !.vscode/extensions.json
 
 # misc
-/.sass-cache
-/connect.lock
-/coverage/*
-/libpeerconnection.log
+*/.sass-cache
+*/connect.lock
+*/coverage/*
+*/libpeerconnection.log
 npm-debug.log
 testem.log
-/typings
+*/typings
 .env
+/server/data
 
 # e2e
 client/e2e/*.js

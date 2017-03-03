@@ -28,6 +28,29 @@ switch ( app.get( 'env' ) ) {
     break;
 }
 
+
+var key = '0g2b7qc51yenv3co98av1m5k';
+var secret = 'zcb8oys17z';
+
+// Set domain and callback
+var domain = "http://localhost:3000/auth";
+var callback = "/callback";
+
+// Set permissions scope
+// var scope = [ 'listings_r', 'transactions_r', 'profile_r' ]
+
+// Instantiate OAuth object
+var oa = new oauth.OAuth(
+  'https://openapi.etsy.com/v2/oauth/request_token?scope=listings_r%20transactions_r%20profile_r%20email_r',
+  'https://openapi.etsy.com/v2/oauth/access_token',
+  key,
+  secret,
+  '1.0A',
+  domain + callback,
+  'HMAC-SHA1'
+)
+
+
 app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded( {
   extended: false
@@ -42,6 +65,7 @@ app.use( cookieSession( {
   name: 'session',
   secret: 'supersecret'
 } ) );
+
 
 const path = require( 'path' );
 app.use( express.static( path.join( __dirname, 'public' ) ) );
@@ -65,4 +89,6 @@ app.listen( port, () => {
   console.log( 'Listening on port', port );
 } );
 
-module.exports = app
+module.exports = {
+  app: app,
+}
