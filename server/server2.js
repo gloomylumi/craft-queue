@@ -2,8 +2,6 @@
 
 // Get required
 var express = require( 'express' );
-// var http = require( 'http' );
-var oauth = require( 'oauth' );
 
 
 //temporary connection to front-end
@@ -27,28 +25,6 @@ switch ( app.get( 'env' ) ) {
     app.use( morgan( 'short' ) );
     break;
 }
-
-
-var key = '0g2b7qc51yenv3co98av1m5k';
-var secret = 'zcb8oys17z';
-
-// Set domain and callback
-var domain = "http://localhost:3000/auth";
-var callback = "/callback";
-
-// Set permissions scope
-// var scope = [ 'listings_r', 'transactions_r', 'profile_r' ]
-
-// Instantiate OAuth object
-var oa = new oauth.OAuth(
-  'https://openapi.etsy.com/v2/oauth/request_token?scope=listings_r%20transactions_r%20profile_r%20email_r',
-  'https://openapi.etsy.com/v2/oauth/access_token',
-  key,
-  secret,
-  '1.0A',
-  domain + callback,
-  'HMAC-SHA1'
-)
 
 
 app.use( bodyParser.json() );
