@@ -12,8 +12,3 @@ exports.Order = class Order {
     this.items = []
   }
 }
-
-exports.testString = "properly exported"
-
-// module.exports = Order
-// module.exports = testString

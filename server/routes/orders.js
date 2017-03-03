@@ -7,28 +7,29 @@ const router = express.Router();
 const axios = require( 'axios' )
 const querystring = require( 'querystring' )
 const Order = require( '../helpers/order-helper.js' ).Order
+const oa = require( '../helpers/auth-helper.js' ).oa
 
 
 console.log( Order );
 
 
-var key = '0g2b7qc51yenv3co98av1m5k';
-var secret = 'zcb8oys17z';
-
-// Set domain and callback
-var domain = "http://localhost:3000/auth";
-var callback = "/callback";
-
-// Instantiate OAuth object
-let oa = new oauth.OAuth(
-  'https://openapi.etsy.com/v2/oauth/request_token?scope=listings_r%20transactions_r%20profile_r%20email_r',
-  'https://openapi.etsy.com/v2/oauth/access_token',
-  key,
-  secret,
-  '1.0A',
-  domain + callback,
-  'HMAC-SHA1'
-)
+// var key = '0g2b7qc51yenv3co98av1m5k';
+// var secret = 'zcb8oys17z';
+//
+// // Set domain and callback
+// var domain = "http://localhost:3000/auth";
+// var callback = "/callback";
+//
+// // Instantiate OAuth object
+// let oa = new oauth.OAuth(
+//   'https://openapi.etsy.com/v2/oauth/request_token?scope=listings_r%20transactions_r%20profile_r%20email_r',
+//   'https://openapi.etsy.com/v2/oauth/access_token',
+//   key,
+//   secret,
+//   '1.0A',
+//   domain + callback,
+//   'HMAC-SHA1'
+// )
 
 router.get( '/all', function( req, res, next ) {
   const shop_id = req.session.shop_id
