@@ -186,7 +186,7 @@ router.get( '/items', function( req, res, next ) {
 
           ( function() {
 
-            timeoutQueue( uniqueListingIdArr, etsyListingRequests, doNextThing, listings )
+            timeoutQueue( uniqueListingIdArr, etsyListingRequests, getImages, listings )
 
             function etsyListingRequests( arrayChunk = arrayChunk ) {
               arrayChunk.forEach( function( id ) {
@@ -219,7 +219,7 @@ router.get( '/items', function( req, res, next ) {
                 let listingId = ids[ 0 ]
                 new Promise( ( resolve, reject ) => {
                   oa.getProtectedResource(
-                    "https://openapi.etsy.com/v2" + `/listings/${id}`,
+                    "https://openapi.etsy.com/v2" + `/listings/${listingId}/images/${imageId}`,
                     "GET",
                     req.session.oauth.access_token,
                     req.session.oauth.access_token_secret,
@@ -229,15 +229,19 @@ router.get( '/items', function( req, res, next ) {
                         console.log( 'uhoh', error );
                         return reject( error )
                       } else {
-                        listings.push( JSON.parse( data ).results[ 0 ] )
+                        images.push( JSON.parse( data ).results[ 0 ] )
 
                         console.log( "* * *" );
-                        return resolve( listings )
+                        return resolve( images )
 
                       }
                     } )
                 } )
               } )
+            }
+
+            function getImages( array ) {
+              timeoutQueue( uniqueImageListingIdArr, etsyImageListingRequests, doNextThing, images )
             }
 
             function doNextThing( array ) {
