@@ -126,32 +126,172 @@ exports.Item = class Item {
 //     }
 //   )
 // } )
-exports.timeoutQ = function timeoutQueue( array, callback, min = 0, max = 6 ) {
-  console.log( "recursion" );
-  let arrayChunk = array.slice( min, max )
-  if ( min > 11 ) {
-    return array
-  } else {
-    setTimeout( function() {
-      timeoutQueue( array, callback, min, max )
-    }, 1000 )
-    min += 6
-    max += 6
-    return callback( arrayChunk )
-  }
-}
+// let min = 0
+// let max = 6
+// let arrayChunk = uniqueListingIdArr.slice( min, max )
+//
+// let returnPromise = [];
 
-exports.timeoutListing = function timeoutListing( array, callback, min = 0, max = 6 ) {
+//FOREACH AND AJAX STUIFF
+
+
+
+// uniqueListingIdArr.forEach( id => {
+//   setTimeout( () => {
+//     returnPromise.push(
+//       new Promise( ( resolve, reject ) => {
+//         oa.getProtectedResource(
+//           "https://openapi.etsy.com/v2" + `/listings/${id}`,
+//           "GET",
+//           req.session.oauth.access_token,
+//           req.session.oauth.access_token_secret,
+//           function( error, data, response ) {
+//
+//             if ( error ) {
+//               console.log( error );
+//               return reject( error )
+//             } else {
+//               listings.push( JSON.parse( data ).results[ 0 ] )
+//
+//               console.log( "* * *" );
+//               return resolve( listings )
+//
+//             }
+//           } )
+//       } ) )
+//   }, 200 )
+// } )
+// return Promise.all( returnPromise );
+
+// timeoutQueue( uniqueListingIdArr, returnPromise, function( arrayChunk = arrayChunk ) {
+//   returnPromise.push( [
+//     arrayChunk.forEach( function( id ) {
+//       new Promise( ( resolve, reject ) => {
+//         oa.getProtectedResource(
+// "https://openapi.etsy.com/v2" + `/listings/${id}`,
+// "GET",
+// req.session.oauth.access_token,
+//   req.session.oauth.access_token_secret,
+//           function( error, data, response ) {
+//
+//             if ( error ) {
+//               console.log( 'uhoh', error );
+//               return reject( error )
+//             } else {
+//               listings.push( JSON.parse( data ).results[ 0 ] )
+//
+//               console.log( "* * *" );
+//               return resolve( listings )
+//
+//             }
+//           } )
+//       } )
+//     } )
+//   ] )
+//
+// } )
+exports.timeoutQ = function timeoutQueue( array, etsyRequests, callback, callbackArray, min = 0, max = 6 ) {
   console.log( "recursion" );
   let arrayChunk = array.slice( min, max )
   if ( min > 11 ) {
-    return array
+    return callback( callbackArray )
   } else {
-    setTimeout( function() {
-      timeoutQueue( array, callback, min, max )
-    }, 1000 )
+    etsyRequests( arrayChunk )
     min += 6
     max += 6
-    return callback( arrayChunk )
+    return setTimeout( function() {
+      timeoutQueue( array, etsyRequests, callback, callbackArray, min, max )
+    }, 1000 )
   }
 }
+//
+// exports.timeoutListing = function timeoutListing( array, callback, min = 0, max = 6 ) {
+//   console.log( "recursion" );
+//   let arrayChunk = array.slice( min, max )
+//   if ( min > 11 ) {
+//     return array
+//   } else {
+//     setTimeout( function() {
+//       timeoutQueue( array, callback, min, max )
+//     }, 1000 )
+//     min += 6
+//     max += 6
+//     return callback( arrayChunk )
+//   }
+// }
+// ( function() {
+//   let delay = 100
+//
+//   // Then build up the following array in an iterative loop.
+//
+//   let reqs = uniqueListingIdArr.map( function( element ) {
+//     return {
+//       id: element,
+//       delay: delay += 150
+//     }
+//   } )
+//   // [ {
+//   //   etsyReq: {} // Whatever you need in your request,
+//   //   delay: += 1000
+//   // } ]
+//
+//   let promises = []
+//   let promisesStarted = false
+//
+//   reqs.forEach( sendEtsyReq ) // Implicit sendEtsyReq(reqPair)
+//
+//   // Must be hoisted, must be called by reference
+//   function sendEtsyReq( reqPair ) {
+//     let id = reqPair.id
+//     let delay = reqPair.delay
+//     console.log( delay );
+//     promises.push( new Promise( function( resolve, reject ) {
+//       setTimeout( makeAPromise, delay ) // fn to call, delay to callback
+//
+//       // startPromiseWatching()
+//
+//
+//       function makeAPromise() {
+//         oa.getProtectedResource(
+//           `https://openapi.etsy.com/v2/listings/${id}`,
+//           "GET",
+//           req.session.oauth.access_token,
+//           req.session.oauth.access_token_secret,
+//
+//           function( error, data ) {
+//             if ( error ) {
+//               console.log( error );
+//               return resolve( `sendEtsyReq ${error}` )
+//               // Used resolve not reject deliberately, so that all
+//               // attempts will make the Promise.all work, even if one
+//               // network call fails. What is in the results array
+//               // will do its thing based on results gathered from successful
+//               // calls
+//             }
+//
+//             // You could console.log here so I split the work here.
+//             console.log( "api response", Date.now() );
+//             let result = JSON.parse( data ).results[ 0 ]
+//             listings.push( result )
+//           }
+//         )
+//       }
+//     } ) )
+//   }
+//
+//   // function startPromiseWatching() {
+//   //   setTimeout( function() {
+//   //     Promise.all( promises )
+//   //       .then( function( values ) {
+//   //         // Filter out the error strings from values
+//   //         console.log( values );
+//   //         values
+//   //           .filter( ( v ) => typeof v !== 'string' )
+//   //           .forEach( function( v ) {
+//   //             // Do something with the results.
+//   //           } )
+//   //       } )
+//   //   }, delay )
+//   //
+//   // }
+// } )()

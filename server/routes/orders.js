@@ -118,7 +118,7 @@ router.get( '/items', function( req, res, next ) {
   var uniqueImageListingIdArr = []
   var images = []
   var itemsTrxData = []
-  let time = 100
+
 
 
 
@@ -153,89 +153,105 @@ router.get( '/items', function( req, res, next ) {
             uniqueListingIdArr = [ ...new Set( listingIdArr ) ];
             console.log( "unique_listings", uniqueListingIdArr.length );
             uniqueImageListingIdArr = [ ...new Set( imageListingIdArr ) ];
+            console.log( uniqueImageListingIdArr );
             resolve( [ itemsTrxData, uniqueListingIdArr, imageListingIdArr ] )
           }
         }
       )
     } )
     .then( ( data ) => {
-      new Promise( ( resolve, reject ) => {
-        oa.getProtectedResource( //get open receipts
-          "https://openapi.etsy.com/v2" + `/shops/${shop_id}/receipts/open`,
-          "GET",
-          req.session.oauth.access_token,
-          req.session.oauth.access_token_secret,
-          function( error, data, response ) {
-            if ( error ) {
-              console.log( error );
-              return reject( error )
-            } else {
-              console.log( "I did it!" );
-              JSON.parse( data ).results.forEach( function( receipt ) {
-                let order = new Order( receipt.receipt_id, receipt.creation_tsz, receipt.name, receipt.message_from_buyer, receipt.total_price )
-                orders.push( order )
-              } )
-              console.log( 'orders' );
-              resolve( orders )
+      return new Promise( ( resolve, reject ) => {
+          oa.getProtectedResource( //get open receipts
+            "https://openapi.etsy.com/v2" + `/shops/${shop_id}/receipts/open`,
+            "GET",
+            req.session.oauth.access_token,
+            req.session.oauth.access_token_secret,
+            function( error, data, response ) {
+              if ( error ) {
+                console.log( error );
+                return reject( error )
+              } else {
+                console.log( "I did it!" );
+                JSON.parse( data ).results.forEach( function( receipt ) {
+                  let order = new Order( receipt.receipt_id, receipt.creation_tsz, receipt.name, receipt.message_from_buyer, receipt.total_price )
+                  orders.push( order )
+                } )
+                console.log( 'orders' );
+                resolve( orders )
+              }
             }
-          }
-        )
-      } ).then( ( data ) => {
-        let min = 0
-        let max = 6
-        let arrayChunk = uniqueListingIdArr.slice( min, max )
-        // var listingQueue = function( arrayChunk ) {
-        //   return Promise.all( arrayChunk.forEach( function( id ) {
-        //     return new Promise( ( resolve, reject ) => {
-        //       oa.getProtectedResource(
-        //         "https://openapi.etsy.com/v2" + `/listings/${id}`,
-        //         "GET",
-        //         req.session.oauth.access_token,
-        //         req.session.oauth.access_token_secret,
-        //         function( error, data, response ) {
-        //           if ( error ) {
-        //             console.log( error );
-        //             reject( error )
-        //           } else {
-        //             listings.push( JSON.parse( data ).results[ 0 ] )
-        //             console.log( "* * *" );
-        //             resolve( data )
-        //
-        //           }
-        //         } )
-        //     } )
-        //   } ) )
-        //
-        // }
-        return Promise.all( timeoutQueue( uniqueListingIdArr, function( arrayChunk = arrayChunk ) {
-          Promise.all(
-            arrayChunk.forEach( function( id ) {
-              return new Promise( ( resolve, reject ) => {
-                oa.getProtectedResource(
-                  "https://openapi.etsy.com/v2" + `/listings/${id}`,
-                  "GET",
-                  req.session.oauth.access_token,
-                  req.session.oauth.access_token_secret,
-                  function( error, data, response ) {
-                    console.log( arrayChunk );
-                    if ( error ) {
-                      console.log( error );
-                      return reject( error )
-                    } else {
-                      listings.push( JSON.parse( data ).results[ 0 ] )
-                      console.log( "* * *" );
-                      return resolve( data )
+          )
+        } )
+        .then( ( data ) => {
 
-                    }
-                  } )
+          ( function() {
+
+            timeoutQueue( uniqueListingIdArr, etsyListingRequests, doNextThing, listings )
+
+            function etsyListingRequests( arrayChunk = arrayChunk ) {
+              arrayChunk.forEach( function( id ) {
+                new Promise( ( resolve, reject ) => {
+                  oa.getProtectedResource(
+                    "https://openapi.etsy.com/v2" + `/listings/${id}`,
+                    "GET",
+                    req.session.oauth.access_token,
+                    req.session.oauth.access_token_secret,
+                    function( error, data, response ) {
+
+                      if ( error ) {
+                        console.log( 'uhoh', error );
+                        return reject( error )
+                      } else {
+                        listings.push( JSON.parse( data ).results[ 0 ] )
+
+                        console.log( "* * *" );
+                        return resolve( listings )
+
+                      }
+                    } )
+                } )
               } )
-            } ) )
+            }
 
-        } ) ).then( () => {
-          res.send( [ "listings", listings ] )
+            function etsyImageListingRequests( arrayChunk = arrayChunk ) {
+              arrayChunk.forEach( function( ids ) {
+                let imageId = ids[ 1 ]
+                let listingId = ids[ 0 ]
+                new Promise( ( resolve, reject ) => {
+                  oa.getProtectedResource(
+                    "https://openapi.etsy.com/v2" + `/listings/${id}`,
+                    "GET",
+                    req.session.oauth.access_token,
+                    req.session.oauth.access_token_secret,
+                    function( error, data, response ) {
+
+                      if ( error ) {
+                        console.log( 'uhoh', error );
+                        return reject( error )
+                      } else {
+                        listings.push( JSON.parse( data ).results[ 0 ] )
+
+                        console.log( "* * *" );
+                        return resolve( listings )
+
+                      }
+                    } )
+                } )
+              } )
+            }
+
+            function doNextThing( array ) {
+
+              console.log( "do next thing" );
+              res.send( array )
+            }
+
+          } )()
+
+
+
 
         } )
-      } )
     } )
 
   // .then( ( data ) => {

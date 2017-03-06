@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
+import { MaterializeModule } from 'angular2-materialize';
 
 
 import { AppComponent } from './app.component';
@@ -13,6 +14,7 @@ import { UserLoginComponent } from './user-login/user-login.component';
 import { OrderListComponent } from './order-list/order-list.component';
 import { OrderCardComponent } from './order-card/order-card.component';
 import { MenuDrawerComponent } from './menu-drawer/menu-drawer.component';
+import { OrderItemComponent } from './order-item/order-item.component';
 
 const appRoutes: Routes = [
   // {path: '', component: PublicNavComponent}
@@ -25,6 +27,14 @@ const appRoutes: Routes = [
   {
     path: 'login',
     component: UserLoginComponent,
+  },
+  {
+    path: 'orders',
+    component: OrderListComponent,
+  },
+  {
+    path: 'orders/:orderId/:itemId',
+    component: OrderCardComponent,
   },
   {
     path: 'signup',
@@ -45,13 +55,15 @@ const appRoutes: Routes = [
     UserLoginComponent,
     OrderListComponent,
     OrderCardComponent,
-    MenuDrawerComponent
+    MenuDrawerComponent,
+    OrderItemComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    MaterializeModule
   ],
   providers: [],
   bootstrap: [AppComponent]
