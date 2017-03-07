@@ -13,7 +13,7 @@ const oa = require( '../helpers/auth-helper.js' ).oa
 
 
 // BEGIN ORDER BUILDING
-router.get( '/items', function( req, res, next ) {
+router.get( '/', function( req, res, next ) {
   const shop_id = req.session.shop_id
   var orders = []
   var listingIdArr = []
