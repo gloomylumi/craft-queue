@@ -29,6 +29,18 @@ app.use( bodyParser.urlencoded( {
 } ) )
 
 // // Setup the Express server
+const forceSSL = function() {
+  return function( req, res, next ) {
+    if ( req.headers[ 'x-forwarded-proto' ] !== 'https' ) {
+      return res.redirect(
+        [ 'https://', req.get( 'Host' ), req.url ].join( '' )
+      );
+    }
+    next();
+  }
+}
+
+app.use( forceSSL() )
 
 const cookieSession = require( 'cookie-session' );
 
@@ -48,16 +60,22 @@ if ( process.env.NODE_ENV !== 'production' ) {
 
 // API ROUTES
 const auth = require( './routes/auth' );
-app.use( '/auth', auth )
+app.use( '/api/auth', auth )
 
 const orders = require( './routes/orders' )
-app.use( '/orders', orders )
+app.use( '/api/orders', orders )
+
+if ( process.env.NODE_ENV !== 'production' ) {
+  app.use( '/*', function( req, res, next ) {
+    res.sendFile( path.join( __dirname, 'index.html' ) );
+  } );
+} else {
+  app.use( '/*', function( req, res, next ) {
+    res.sendFile( path.join( __dirname, 'dist/index.html' ) );
+  } );
+}
 
 
-
-app.use( '/*', function( req, res, next ) {
-  res.sendFile( __dirname, 'index.html' );
-} );
 
 const port = process.env.PORT || 8080;
 
