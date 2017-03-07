@@ -118,6 +118,8 @@ router.get( '/items', function( req, res, next ) {
   var uniqueImageListingIdArr = []
   var images = []
   var itemsTrxData = []
+  var itemsTrxLstData = []
+  var itemsComplete = []
 
 
 
@@ -125,7 +127,7 @@ router.get( '/items', function( req, res, next ) {
   new Promise( ( resolve, reject ) => {
       oa.getProtectedResource( //get transaction items
         "https://openapi.etsy.com/v2" + `/shops/${shop_id}/transactions?` + querystring.stringify( {
-          limit: 100
+          limit: 200
         } ),
         "GET",
         req.session.oauth.access_token,
@@ -138,7 +140,7 @@ router.get( '/items', function( req, res, next ) {
             let rawItemsArr = JSON.parse( data ).results
 
             rawItemsArr.forEach( function( transaction ) {
-              if ( transaction.shipped_tsz !== null ) {
+              if ( transaction.shipped_tsz === null ) {
 
                 listingIdArr.push( transaction.listing_id )
 
@@ -187,6 +189,81 @@ router.get( '/items', function( req, res, next ) {
           ( function() {
 
             timeoutQueue( uniqueListingIdArr, etsyListingRequests, getImages, listings )
+
+
+            function getImages( array ) {
+              timeoutQueue( uniqueImageListingIdArr, etsyImageListingRequests, addListingDataToItems, listings )
+            }
+
+            function addListingDataToItems( listings, index = 0 ) {
+              if ( itemsTrxData.length === 0 ) {
+                return addImageDatatoItems( images )
+              }
+              if ( index > listings.length - 1 ) {
+                itemsTrxLstData.push( itemsTrxData.shift() )
+                return addListingDataToItems( listings, index )
+              }
+              for ( var i = 0; i < itemsTrxData.length; i++ ) {
+                if ( itemsTrxData[ i ].listingId === listings[ index ].listing_id ) {
+                  itemsTrxData[ i ].processingTime = listings[ index ].processing_max
+                  itemsTrxLstData.push( itemsTrxData.splice( i, 1 )[ 0 ] )
+                  i--
+                }
+              }
+              index++
+              return addListingDataToItems( listings, index )
+
+            }
+
+            function addImageDatatoItems( images, index = 0 ) {
+              if ( itemsTrxLstData.length === 0 ) {
+                return addItemsToOrders()
+              }
+              if ( index > images.length - 1 ) {
+                itemsComplete.push( itemsTrxLstData.shift() )
+                return addListingDataToItems( listings, index )
+              }
+              for ( var i = 0; i < itemsTrxLstData.length; i++ ) {
+                if ( itemsTrxLstData[ i ].listingId === images[ index ].listing_id ) {
+                  itemsTrxLstData[ i ].imageThumbnailUrl = images[ index ].url_75x75
+                  itemsTrxLstData[ i ].imageFullUrl = images[ index ].url_fullxfull
+                  itemsComplete.push( itemsTrxLstData.splice( i, 1 )[ 0 ] )
+                  i--
+                }
+              }
+              index++
+              return addImageDatatoItems( images, index )
+            }
+
+            function addItemsToOrders( index = 0 ) {
+              if ( itemsComplete.length === 0 ) {
+                orders.forEach( function( element ) {
+                  element.calcShipBy()
+
+                } )
+                res.send( [ orders, itemsComplete ] )
+                return
+              }
+              if ( index > orders.length - 1 ) {
+                orders.forEach( function( element ) {
+                  element.calcShipBy()
+
+                } )
+                res.send( [ orders, itemsComplete ] )
+                return
+              }
+              for ( var i = 0; i < itemsComplete.length; i++ ) {
+                if ( itemsComplete[ i ].orderId === orders[ index ].orderId ) {
+                  console.log( "trying to add item" );
+                  orders[ index ].addItem( itemsComplete[ i ] )
+                  itemsComplete.splice( i, 1 )
+                  i--
+                }
+              }
+              index++
+              return addItemsToOrders( index )
+
+            }
 
             function etsyListingRequests( arrayChunk = arrayChunk ) {
               arrayChunk.forEach( function( id ) {
@@ -240,9 +317,7 @@ router.get( '/items', function( req, res, next ) {
               } )
             }
 
-            function getImages( array ) {
-              timeoutQueue( uniqueImageListingIdArr, etsyImageListingRequests, doNextThing, images )
-            }
+
 
             function doNextThing( array ) {
 

@@ -11,24 +11,25 @@ const token =
   exports.Order = class Order {
     constructor( receipt_id, creation_tsz, name, message_from_buyer, total_price ) {
       this.orderId = receipt_id
-      this.orderDate = new Date( creation_tsz )
+      this.orderDate = new Date( parseInt( creation_tsz + "000" ) )
       this.buyerName = name
       this.buyerMessage = message_from_buyer
       this.totalPrice = total_price
       this.items = []
+
     }
 
     addItem( item ) {
       this.items.push( item )
     }
-    get shipBy() {
+    calcShipBy() {
       let maxProcessing = 0
       for ( var i = 0; i < this.items.length; i++ ) {
         if ( this.items[ i ].processingTime > maxProcessing ) {
           maxProcessing = this.items[ i ].processingTime
         }
       }
-      return new Date( this.orderDate.getFullYear(), this.orderDate.getMonth, ( this.orderDate.getDate() + maxProcessing ) )
+      this.shipBy = new Date( this.orderDate.getFullYear(), this.orderDate.getMonth(), ( this.orderDate.getDate() + maxProcessing ) )
     }
   }
 
@@ -193,7 +194,7 @@ exports.Item = class Item {
 exports.timeoutQ = function timeoutQueue( array, etsyRequests, callback, callbackArray, min = 0, max = 6 ) {
   console.log( "recursion" );
   let arrayChunk = array.slice( min, max )
-  if ( min > 11 ) {
+  if ( min > array.length ) {
     return callback( callbackArray )
   } else {
     etsyRequests( arrayChunk )
