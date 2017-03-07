@@ -16,6 +16,7 @@ import { OrderListComponent } from './order-list/order-list.component';
 import { OrderCardComponent } from './order-card/order-card.component';
 import { MenuDrawerComponent } from './menu-drawer/menu-drawer.component';
 import { OrderItemComponent } from './order-item/order-item.component';
+import { AuthNavComponent } from './auth-nav/auth-nav.component';
 
 const appRoutes: Routes = [
   // {path: '', component: PublicNavComponent}
@@ -29,6 +30,28 @@ const appRoutes: Routes = [
     path: 'login',
     component: UserLoginComponent,
   },
+  {
+   path: 'user',
+   component: AuthNavComponent,
+   children: [
+     {
+       path: 'orders',
+       component: OrderListComponent,
+       children: [
+         {
+            path: '',
+            component: OrderCardComponent,
+            children: [
+              {
+                path: ':orderId/:itemId',
+                component: OrderItemComponent
+              }
+            ]
+         }
+       ],
+     }
+   ]
+ },
   {
     path: 'orders',
     component: OrderListComponent,
@@ -57,7 +80,8 @@ const appRoutes: Routes = [
     OrderListComponent,
     OrderCardComponent,
     MenuDrawerComponent,
-    OrderItemComponent
+    OrderItemComponent,
+    AuthNavComponent
   ],
   imports: [
     BrowserModule,
