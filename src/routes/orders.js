@@ -4,7 +4,6 @@ const express = require( 'express' );
 const oauth = require( 'oauth' );
 const knex = require( '../knex' );
 const router = express.Router();
-const axios = require( 'axios' )
 const querystring = require( 'querystring' )
 const Order = require( '../helpers/order-helper.js' ).Order
 const Item = require( '../helpers/order-helper.js' ).Item
@@ -78,12 +77,10 @@ router.get( '/', function( req, res, next ) {
                 console.log( error );
                 return reject( error )
               } else {
-                console.log( "I did it!" );
                 JSON.parse( data ).results.forEach( function( receipt ) {
                   let order = new Order( receipt.receipt_id, receipt.creation_tsz, receipt.name, receipt.message_from_buyer, receipt.total_price )
                   orders.push( order )
                 } )
-                console.log( 'orders' );
                 resolve( orders )
               }
             }
@@ -154,12 +151,11 @@ router.get( '/', function( req, res, next ) {
                   element.calcShipBy()
 
                 } )
-                res.send( [ orders, itemsComplete ] )
+                res.send( orders )
                 return
               }
               for ( var i = 0; i < itemsComplete.length; i++ ) {
                 if ( itemsComplete[ i ].orderId === orders[ index ].orderId ) {
-                  console.log( "trying to add item" );
                   orders[ index ].addItem( itemsComplete[ i ] )
                   itemsComplete.splice( i, 1 )
                   i--
@@ -178,16 +174,12 @@ router.get( '/', function( req, res, next ) {
                     req.session.oauth.access_token,
                     req.session.oauth.access_token_secret,
                     function( error, data, response ) {
-
                       if ( error ) {
-                        console.log( 'uhoh', error );
+                        console.log( error );
                         return reject( error )
                       } else {
                         listings.push( JSON.parse( data ).results[ 0 ] )
-
-                        console.log( "* * *" );
                         return resolve( listings )
-
                       }
                     } )
                 } )
@@ -207,12 +199,11 @@ router.get( '/', function( req, res, next ) {
                     function( error, data, response ) {
 
                       if ( error ) {
-                        console.log( 'uhoh', error );
+                        console.log( error );
                         return reject( error )
                       } else {
                         images.push( JSON.parse( data ).results[ 0 ] )
 
-                        console.log( "* * *" );
                         return resolve( images )
 
                       }

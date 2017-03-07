@@ -4,12 +4,17 @@ var exports = module.exports = {}
 
 const oauth = require( 'oauth' )
 
+if ( process.env.NODE_ENV !== 'production' ) {
+  require( 'dotenv' ).config();
+}
 
-var key = '0g2b7qc51yenv3co98av1m5k';
-var secret = 'zcb8oys17z';
+
+var key = process.env.KEY;
+var secret = process.env.SECRET;
+
 
 // Set domain and callback
-var domain = "http://localhost:3000/auth";
+var domain = __dirname + 'auth';
 var callback = "/callback";
 
 // Instantiate OAuth object

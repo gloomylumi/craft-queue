@@ -3,10 +3,6 @@
 // Get required
 var express = require( 'express' );
 
-
-//temporary connection to front-end
-// const cq = 'localhost:4200'
-
 // Instantiate Express
 var app = express();
 
@@ -33,19 +29,17 @@ app.use( bodyParser.urlencoded( {
 } ) )
 
 // // Setup the Express server
-// var server = http.createServer( app );
 
 const cookieSession = require( 'cookie-session' );
 
 app.use( cookieSession( {
   name: 'session',
-  secret: 'supersecret'
+  secret: process.env.COOKIESECRET
 } ) );
 
 
 const path = require( 'path' );
 app.use( express.static( path.join( __dirname, 'app' ) ) );
-
 
 // API ROUTES
 const auth = require( './routes/auth' );
@@ -66,4 +60,6 @@ app.listen( port, () => {
   console.log( 'Listening on port', port );
 } );
 
-module.exports = app
+module.exports = {
+  app: app,
+}

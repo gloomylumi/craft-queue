@@ -7,11 +7,15 @@ const cookieSession = require( 'cookie-session' );
 const knex = require( '../knex' );
 const router = express.Router();
 const oa = require( '../helpers/auth-helper' ).oa
-
+if ( process.env.NODE_ENV !== 'production' ) {
+  require( 'dotenv' ).config();
+}
 
 // Root route
-router.get( '/', function( req, res ) {
-
+router.get( '/', function( err, req, res ) {
+  if ( err ) {
+    res.send( err )
+  }
   // If session variable has not been initialized
   if ( !req.session.oauth ) {
     console.log( '*** initializing req.session.oauth ***' );
@@ -49,7 +53,7 @@ router.get( '/get-access-token', function( req, res ) {
 } );
 
 // Get OAuth access token on callback
-router.get( '/callback', function( req, res ) {
+router.get( '/callback', function( req, res, next ) {
 
   console.log( '*** callback ***' )
 
