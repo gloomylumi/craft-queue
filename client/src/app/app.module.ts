@@ -6,6 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 import "materialize-css"
 import { MaterializeModule } from 'angular2-materialize';
 
+import {AuthService} from './auth.service'
 
 import { AppComponent } from './app.component';
 import { SplashComponent } from './splash/splash.component';
@@ -90,7 +91,7 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     MaterializeModule
   ],
-  providers: [],
+  providers: [AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

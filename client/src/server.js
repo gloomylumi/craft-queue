@@ -44,8 +44,7 @@ app.use( cookieSession( {
 
 
 const path = require( 'path' );
-app.use( express.static( path.join( __dirname, 'app' ) ) );
-
+app.use( express.static( path.join( __dirname, 'public' ) ) );
 
 // API ROUTES
 const auth = require( './routes/auth' );
@@ -57,7 +56,7 @@ app.use( '/orders', orders )
 
 
 app.use( '/*', function( req, res, next ) {
-  res.sendFile( __dirname, 'index.html' );
+  res.send( "Ooops" );
 } );
 
 const port = process.env.PORT || 3000;
@@ -66,4 +65,6 @@ app.listen( port, () => {
   console.log( 'Listening on port', port );
 } );
 
-module.exports = app
+module.exports = {
+  app: app,
+}
