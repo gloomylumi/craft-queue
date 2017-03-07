@@ -44,7 +44,8 @@ app.use( cookieSession( {
 
 
 const path = require( 'path' );
-app.use( express.static( path.join( __dirname, 'public' ) ) );
+const path = require( 'path' );
+app.use( express.static( path.join( __dirname, 'app' ) ) );
 
 // API ROUTES
 const auth = require( './routes/auth' );
@@ -56,7 +57,7 @@ app.use( '/orders', orders )
 
 
 app.use( '/*', function( req, res, next ) {
-  res.send( "Ooops" );
+  res.sendFile( __dirname, 'index.html' );
 } );
 
 const port = process.env.PORT || 3000;
