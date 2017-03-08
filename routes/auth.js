@@ -14,7 +14,7 @@ if ( process.env.NODE_ENV !== 'production' ) {
 // Root route
 router.get( '/', function( err, req, res ) {
   if ( err ) {
-    res.send( err )
+    return ( err )
   }
   // If session variable has not been initialized
   if ( !req.session.oauth ) {

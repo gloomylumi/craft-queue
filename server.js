@@ -29,24 +29,24 @@ app.use( bodyParser.urlencoded( {
 } ) )
 
 // // Setup the Express server
-const forceSSL = function() {
-  return function( req, res, next ) {
-    if ( req.headers[ 'x-forwarded-proto' ] !== 'https' ) {
-      return res.redirect(
-        [ 'https://', req.get( 'Host' ), req.url ].join( '' )
-      );
-    }
-    next();
-  }
-}
-
-app.use( forceSSL() )
+// const forceSSL = function() {
+//   return function( req, res, next ) {
+//     if ( req.headers[ 'x-forwarded-proto' ] !== 'https' ) {
+//       return res.redirect(
+//         [ 'https://', req.get( 'Host' ), req.url ].join( '' )
+//       );
+//     }
+//     next();
+//   }
+// }
+//
+// app.use( forceSSL() )
 
 const cookieSession = require( 'cookie-session' );
 
 app.use( cookieSession( {
   name: 'session',
-  secret: process.env.COOKIESECRET
+  secret: 'supersecret'
 } ) );
 
 
@@ -77,7 +77,7 @@ if ( process.env.NODE_ENV !== 'production' ) {
 
 
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 
 app.listen( port, () => {
   console.log( 'Listening on port', port );

@@ -7,6 +7,7 @@ import "materialize-css"
 import { MaterializeModule } from 'angular2-materialize';
 
 import {AuthService} from './auth.service'
+import {OrdersService} from './orders.service'
 
 import { AppComponent } from './app.component';
 import { SplashComponent } from './splash/splash.component';
@@ -29,17 +30,17 @@ const appRoutes: Routes = [
   },
   {
     path: 'login',
-    component: UserLoginComponent,
+    component: UserLoginComponent
   },
   {
-   path: 'user',
-   component: AuthNavComponent,
-   children: [
-     {
-       path: 'orders',
-       component: OrderListComponent,
-       children: [
-         {
+    path: 'user',
+    component: AuthNavComponent,
+    children: [
+      {
+        path: 'orders',
+        component: OrderListComponent,
+        children: [
+          {
             path: '',
             component: OrderCardComponent,
             children: [
@@ -48,14 +49,14 @@ const appRoutes: Routes = [
                 component: OrderItemComponent
               }
             ]
-         }
-       ],
-     }
-   ]
- },
+          }
+        ],
+      }
+    ]
+  },
   {
-    path: 'orders',
-    component: OrderListComponent,
+    path: 'callback',
+    redirectTo: '/user'
   },
   {
     path: 'orders/:orderId/:itemId',
@@ -65,7 +66,8 @@ const appRoutes: Routes = [
     path: 'signup',
     component: UserSignUpComponent,
   },
-  { path: '',
+  {
+    path: '',
     redirectTo: '/welcome',
     pathMatch: 'full'
   }
@@ -91,7 +93,10 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     MaterializeModule
   ],
-  providers: [AuthService],
+  providers: [
+    AuthService,
+    OrdersService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
