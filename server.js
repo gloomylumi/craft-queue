@@ -6,6 +6,14 @@ var express = require( 'express' );
 // Instantiate Express
 var app = express();
 
+var cors = require( 'express-cors' )
+
+app.use( cors( {
+  allowedOrigins: [
+    'localhost:8080', 'etsy.com'
+  ]
+} ) )
+
 if ( process.env.NODE_ENV !== 'production' ) {
   require( 'dotenv' ).config();
 }
