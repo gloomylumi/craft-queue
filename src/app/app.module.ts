@@ -5,6 +5,7 @@ import { HttpModule } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
 import "materialize-css"
 import { MaterializeModule } from 'angular2-materialize';
+import { Ng2OrderModule } from 'ng2-order-pipe'
 
 import {AuthService} from './auth.service'
 import {OrdersService} from './orders.service'
@@ -39,28 +40,12 @@ const appRoutes: Routes = [
       {
         path: 'orders',
         component: OrderListComponent,
-        children: [
-          {
-            path: '',
-            component: OrderCardComponent,
-            children: [
-              {
-                path: ':orderId/:itemId',
-                component: OrderItemComponent
-              }
-            ]
-          }
-        ],
       }
     ]
   },
   {
     path: 'callback',
     redirectTo: '/user'
-  },
-  {
-    path: 'orders/:orderId/:itemId',
-    component: OrderCardComponent,
   },
   {
     path: 'signup',
@@ -91,7 +76,8 @@ const appRoutes: Routes = [
     FormsModule,
     HttpModule,
     RouterModule.forRoot(appRoutes),
-    MaterializeModule
+    MaterializeModule,
+    Ng2OrderModule
   ],
   providers: [
     AuthService,

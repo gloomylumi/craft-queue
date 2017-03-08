@@ -1,3 +1,3 @@
 <div class="container">
-  <router-outlet></router-outlet>
+  <app-order-card *ngFor="let order of Orders | orderBy: shipBy; trackBy: trackByOrders" [order]="order"></app-order-card>
 </div>
