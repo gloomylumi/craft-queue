@@ -10,7 +10,7 @@ var cors = require( 'express-cors' )
 
 app.use( cors( {
   allowedOrigins: [
-    'localhost:8080', 'etsy.com'
+    'http://localhost:8080', 'etsy.com'
   ]
 } ) )
 
