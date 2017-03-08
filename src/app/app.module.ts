@@ -9,6 +9,7 @@ import { Ng2OrderModule } from 'ng2-order-pipe'
 
 import {AuthService} from './auth.service'
 import {OrdersService} from './orders.service'
+import {OrdersResolver} from './orders-resolver.service'
 
 import { AppComponent } from './app.component';
 import { SplashComponent } from './splash/splash.component';
@@ -39,7 +40,7 @@ const appRoutes: Routes = [
     children: [
       {
         path: 'orders',
-        component: OrderListComponent,
+        component: OrderListComponent
       }
     ]
   },
@@ -81,7 +82,8 @@ const appRoutes: Routes = [
   ],
   providers: [
     AuthService,
-    OrdersService
+    OrdersService,
+    OrdersResolver
   ],
   bootstrap: [AppComponent]
 })

@@ -1,3 +1,27 @@
+<p>order-list working</p>
 <div class="container">
-  <app-order-card *ngFor="let order of Orders | orderBy: shipBy; trackBy: trackByOrders" [order]="order"></app-order-card>
+  <!-- <app-order-card *ngFor="let order of Orders" [order]="order"></app-order-card> -->
+  <li *ngFor="let order of orders">
+  <div class="row">
+    <div class="col s12 m12">
+      <div class="card-panel teal">
+        <div class="row">
+          <div class="col s12 m4">{{order.buyerName}}</div>
+          <div class="col s12 m4">Receipt: {{order.orderId}}</div>
+          <div class="deadline col s12 m4">{{order.shipBy}}</div>
+        </div>
+        <div *ngIf="buyerMessage" class="row">
+          <div class="m12">
+            <p>{{order.buyerMessage}}</p>
+          </div>
+        </div>
+        <!-- <app-order-item *ngFor="let item of items" [item]="item"></app-order-item> -->
+        <div class="row">
+          <div class="left">Ordered on: {{order.orderDate}}</div>
+          <div class="right">Total: {{order.totalPrice}}</div>
+        </div>  <!-- end panel bottom row -->
+      </div> <!-- end card-panel  -->
+    </div> <!-- end column  -->
+  </div> <!-- end row -->
+  </li>
 </div>
