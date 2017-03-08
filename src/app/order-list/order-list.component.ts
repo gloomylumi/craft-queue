@@ -1,9 +1,9 @@
 import { Component, OnInit, HostBinding } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-// import { Order } from '../order'
+import { Item, Order } from '../order'
 // import { slideInDownAnimation }   from '../animations';
-import { Order, OrdersService } from '../orders.service'
+import { OrdersService } from '../orders.service'
 
 @Component({
   selector: 'app-order-list',
@@ -14,9 +14,7 @@ export class OrderListComponent implements OnInit {
   // @HostBinding('@routeAnimation') routeAnimation = true;
 
   orders: Order[]
-
-
-  sample: Order
+  sort: string = 'shipBy'
 
 
   constructor(
@@ -27,6 +25,7 @@ export class OrderListComponent implements OnInit {
 
   getOrders(): any {
     this.orders = []
+
     this.ordersService.getOrders().then(orders => {
       console.log(orders)
 
@@ -37,10 +36,32 @@ export class OrderListComponent implements OnInit {
         let buyerName = element.buyerName
         let buyerMessage = element.buyerMessage
         let totalPrice = element.totalPrice
-        let items = element.items
+
         let shipBy = element.shipBy
+
+        let items = element.items.map((item) => {
+
+          let itemId = item.itemId
+          let orderId = item.orderId
+          let listingId = item.listingId
+          let title = item.title
+          let quantity = item.quantity
+          let price = item.price
+          let transactionUrl = item.transactionUrl
+          let variationName1 = item.variationName1
+          let variationValue1 = item.variationValue1
+          let variationName2 = item.variationName2
+          let variationValue2 = item.variationValue2
+          let imageThumbnailUrl = item.imageThumbnailUrl
+          let imageFullUrl = item.imageFullUrl
+          let processingTime = item.processingTime
+          return new Item(itemId, orderId, listingId, title, quantity, price, transactionUrl, variationName1, variationValue1, variationName2, variationValue2, imageThumbnailUrl, imageFullUrl, processingTime)
+
+        })
+
         let order = new Order(orderId, orderDate, buyerName, buyerMessage, totalPrice, items, shipBy)
         this.orders.push(order)
+        console.log(JSON.stringify(order))
       })
     })
   }

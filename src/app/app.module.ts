@@ -21,6 +21,7 @@ import { OrderCardComponent } from './order-card/order-card.component';
 import { MenuDrawerComponent } from './menu-drawer/menu-drawer.component';
 import { OrderItemComponent } from './order-item/order-item.component';
 import { AuthNavComponent } from './auth-nav/auth-nav.component';
+import { OrderByPipe } from './order-by.pipe';
 
 const appRoutes: Routes = [
   // {path: '', component: PublicNavComponent}
@@ -70,7 +71,8 @@ const appRoutes: Routes = [
     OrderCardComponent,
     MenuDrawerComponent,
     OrderItemComponent,
-    AuthNavComponent
+    AuthNavComponent,
+    OrderByPipe
   ],
   imports: [
     BrowserModule,
