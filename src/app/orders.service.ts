@@ -28,7 +28,7 @@ import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class OrdersService {
-  private ordersUrl = 'api/orders'
+  private ordersUrl = 'localhost:8080/api/orders'
 
   constructor(private http: Http) { }
 
