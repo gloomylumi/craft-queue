@@ -5,7 +5,7 @@ import { HttpModule } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
 import "materialize-css"
 import { MaterializeModule } from 'angular2-materialize';
-import { Ng2OrderModule } from 'ng2-order-pipe'
+
 
 import {AuthService} from './auth.service'
 import {OrdersService} from './orders.service'
@@ -21,7 +21,7 @@ import { OrderCardComponent } from './order-card/order-card.component';
 import { MenuDrawerComponent } from './menu-drawer/menu-drawer.component';
 import { OrderItemComponent } from './order-item/order-item.component';
 import { AuthNavComponent } from './auth-nav/auth-nav.component';
-import { OrderByPipe } from './order-by.pipe';
+import { OrderBy } from './order-by.pipe';
 
 const appRoutes: Routes = [
   // {path: '', component: PublicNavComponent}
@@ -72,7 +72,7 @@ const appRoutes: Routes = [
     MenuDrawerComponent,
     OrderItemComponent,
     AuthNavComponent,
-    OrderByPipe
+    OrderBy
   ],
   imports: [
     BrowserModule,
@@ -80,7 +80,7 @@ const appRoutes: Routes = [
     HttpModule,
     RouterModule.forRoot(appRoutes),
     MaterializeModule,
-    Ng2OrderModule
+
   ],
   providers: [
     AuthService,
