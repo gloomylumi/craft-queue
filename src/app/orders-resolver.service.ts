@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Router, Resolve, RouterStateSnapshot,
   ActivatedRouteSnapshot } from '@angular/router';
 
-
-import { OrdersService, Order } from './orders.service'
+import { Order } from './order'
+import { OrdersService} from './orders.service'
 
 @Injectable()
 export class OrdersResolver implements Resolve<Order[]> {

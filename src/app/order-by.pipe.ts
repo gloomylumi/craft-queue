@@ -1,9 +1,18 @@
-import {Pipe, PipeTransform} from 'angular2/core';
+import {Pipe, PipeTransform} from '@angular/core';
 
 @Pipe({ name: 'orderBy', pure: false })
 export class OrderBy implements PipeTransform {
 
-  static _orderByComparator(a: any, b: any): number {
+  private static _orderByComparator(a: any, b: any): number {
+
+    if ((a === null || a === undefined) && (b === null || b === undefined))
+      return 0;
+
+    if (a === null || a === undefined)
+      a = (isNaN(parseFloat(b)) || !isFinite(b)) ? '' : 0;
+
+    if (b === null || b === undefined)
+      b = (isNaN(parseFloat(a)) || !isFinite(a)) ? '' : 0;
 
     if ((isNaN(parseFloat(a)) || !isFinite(a)) || (isNaN(parseFloat(b)) || !isFinite(b))) {
       //Isn't a number so lowercase the string to properly compare
@@ -16,7 +25,7 @@ export class OrderBy implements PipeTransform {
       if (parseFloat(a) > parseFloat(b)) return 1;
     }
 
-    return 0; //equal each other
+    return 0;
   }
 
   transform(input: any, [config = '+']): any {
@@ -37,9 +46,9 @@ export class OrderBy implements PipeTransform {
           : propertyToCheck;
 
         return input.sort(function(a: any, b: any) {
-          return !desc ?
-                ? OrderBy._orderByComparator(a[property], b[property])
-              : -OrderBy._orderByComparator(a[property], b[property]);
+          return !desc
+            ? OrderBy._orderByComparator(a[property], b[property])
+            : -OrderBy._orderByComparator(a[property], b[property]);
         });
       }
     }
@@ -52,9 +61,9 @@ export class OrderBy implements PipeTransform {
             ? config[i].substr(1)
             : config[i];
 
-          var comparison = !desc ?
-                ? OrderBy._orderByComparator(a[property], b[property])
-              : -OrderBy._orderByComparator(a[property], b[property]);
+          var comparison = !desc
+            ? OrderBy._orderByComparator(a[property], b[property])
+            : -OrderBy._orderByComparator(a[property], b[property]);
 
           //Don't return 0 yet in case of needing to sort by next property
           if (comparison != 0) return comparison;
@@ -65,4 +74,3 @@ export class OrderBy implements PipeTransform {
     }
   }
 }
-Using the Pip

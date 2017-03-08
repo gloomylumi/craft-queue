@@ -8,7 +8,7 @@ import { OrdersService } from '../orders.service'
 @Component({
   selector: 'app-order-list',
   templateUrl: './order-list.component.html',
-  styleUrls: ['./order-list.component.css']
+  styleUrls: ['./order-list.component.css'],
 })
 export class OrderListComponent implements OnInit {
   // @HostBinding('@routeAnimation') routeAnimation = true;

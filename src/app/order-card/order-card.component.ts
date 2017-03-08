@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { Order } from '../orders.service'
+import { Order } from '../order'
 
 
 

@@ -1,46 +1,29 @@
-<p>order-list working</p>
 <div class="container">
   <!-- <app-order-card *ngFor="let order of Orders" [order]="order"></app-order-card> -->
-  <li *ngFor="let order of orders | orderBy: sort">
+  <li *ngFor="let order of orders | orderBy: 'shipBy'">
   <div class="row">
     <div class="col s12 m12">
-      <div class="card-panel teal">
+      <div class="card-panel grey lighten-4">
+
         <div class="row">
           <div class="col s12 m4">{{order.buyerName}}</div>
           <div class="col s12 m4">Receipt: {{order.orderId}}</div>
           <div class="deadline col s12 m4">{{order.shipBy}}</div>
-
         </div>
+
         <div *ngIf="buyerMessage !== null" class="row">
           <div class="m12">
             <p>{{order.buyerMessage}}</p>
           </div>
         </div>
-        <!-- <app-order-item *ngFor="let item of order.items" [item]="item"></app-order-item> -->
 
-        <li> <!-- ***** START ITEMS ****** -->
-        <div class="row">
-          <div class="card horizontal">
-            <div class="card-image">
-              <img src="http://lorempixel.com/100/190/nature/6">
-            </div> <!-- end card image -->
-            <div class="card-stacked">
-              <div class="card-content">
-                <span class="card-title activator grey-text text-darken-4">{{order.items[0].title}}</span>
-                <p>I am a very simple card. I am good at containing small bits of information.</p>
-              </div> <!-- end card-content -->
-              <div class="card-action">
-                <a href="#">This is a link</a>
-              </div> <!-- end card-action -->
-            </div> <!-- end card-stacked -->
-          </div> <!-- end card horizontal -->
-        </div> <!-- end panel row -->
-      </li> <!-- ***** END ITEMS ****** -->
+        <app-order-item *ngFor="let item of order.items" [item]="item"></app-order-item>
 
         <div class="row">
           <div class="left">Ordered on: {{order.orderDate}}</div>
           <div class="right">Total: {{order.totalPrice}}</div>
         </div>  <!-- end panel bottom row -->
+        
       </div> <!-- end card-panel  -->
     </div> <!-- end column  -->
   </div> <!-- end row -->
