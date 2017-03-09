@@ -28,7 +28,7 @@ import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class OrdersService {
-  private ordersUrl = 'localhost:8080/api/orders'
+  private ordersUrl = '/api/orders'
 
   constructor(private http: Http) { }
 
@@ -36,7 +36,9 @@ export class OrdersService {
     return this.http.get(this.ordersUrl)
       .toPromise()
       .then(response => {
-        return this.quickSortByShipDate(response.json())
+        let sorted = this.quickSortByShipDate(response.json())
+        console.log(sorted)
+        return sorted
       })
       .catch(this.handleError)
 
@@ -45,9 +47,10 @@ export class OrdersService {
     if (list.length == 0) {
       return [];
     }
-    var lesser = []; var greater = []; var pivot = parseInt(list[0].shipBy.substring(0, 9).replace('-', ''));
+    var lesser = []; var greater = []; var pivot = list[0];
+    var pivotParam = list[0].shipBy;
     for (var i = 1; i < list.length; i++) {
-      if (parseInt(list[i].shipBy.substring(0, 9).replace('-', '')) < pivot) {
+      if (list[i].shipBy < pivotParam) {
         lesser.push(list[i]);
       } else {
         greater.push(list[i]);
@@ -57,7 +60,6 @@ export class OrdersService {
   }
 
   private handleError(error: any): Promise<any> {
-    console.log(error)
     console.error('An error has occurred', error)
     return Promise.reject(error.message || error)
   }

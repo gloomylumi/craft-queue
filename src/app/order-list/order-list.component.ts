@@ -27,9 +27,6 @@ export class OrderListComponent implements OnInit {
     this.orders = []
 
     this.ordersService.getOrders().then(orders => {
-      console.log(orders)
-
-      console.log(orders)
       orders.forEach((element) => {
         let orderId = element.orderId
         let orderDate = element.orderDate
@@ -61,7 +58,6 @@ export class OrderListComponent implements OnInit {
 
         let order = new Order(orderId, orderDate, buyerName, buyerMessage, totalPrice, items, shipBy)
         this.orders.push(order)
-        console.log(JSON.stringify(order))
       })
     })
   }
