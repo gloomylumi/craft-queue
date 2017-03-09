@@ -5,14 +5,21 @@ var express = require( 'express' );
 
 // Instantiate Express
 var app = express();
+const cookieParser = require( 'cookie-parser' )
+app.use( cookieParser() )
+// var cors = require( 'express-cors' )
+//
+// app.use( cors( {
+//   allowedOrigins: [
+//     '*'
+//   ]
+app.use( function( req, res, next ) {
+  res.header( 'Access-Control-Allow-Origin', '*' );
+  res.header( 'Access-Control-Allow-Methods', 'GET' );
+  res.header( 'Access-Control-Allow-Headers', 'Content-Type' );
 
-var cors = require( 'express-cors' )
-
-app.use( cors( {
-  allowedOrigins: [
-    'http://localhost:8080', 'etsy.com'
-  ]
-} ) )
+  next();
+} )
 
 if ( process.env.NODE_ENV !== 'production' ) {
   require( 'dotenv' ).config();
@@ -61,7 +68,7 @@ app.use( cookieSession( {
 const path = require( 'path' );
 if ( process.env.NODE_ENV !== 'production' ) {
 
-  app.use( express.static( path.join( __dirname, 'app' ) ) );
+  app.use( express.static( path.join( __dirname, 'src' ) ) );
 } else {
   app.use( express.static( path.join( __dirname, 'dist' ) ) );
 }
@@ -85,7 +92,7 @@ if ( process.env.NODE_ENV !== 'production' ) {
 
 
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 
 app.listen( port, () => {
   console.log( 'Listening on port', port );

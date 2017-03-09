@@ -11,10 +11,13 @@ if ( process.env.NODE_ENV !== 'production' ) {
   require( 'dotenv' ).config();
 }
 
+
 // Root route
 router.get( '/', function( err, req, res ) {
+
   if ( err ) {
-    return ( err )
+    console.log( err );
+    return err
   }
   // If session variable has not been initialized
   if ( !req.session.oauth ) {
@@ -93,24 +96,21 @@ function test( req, res ) {
     req.session.oauth.access_token,
     req.session.oauth.access_token_secret,
     function( error, data, response ) {
-      if ( error ) {
-        console.log( error );
 
-      } else {
-        if ( !req.session.user_id ) {
-          req.session.user_id = ( JSON.parse( data ) ).results[ 0 ].user_id
+      if ( !req.session.user_id ) {
+        req.session.user_id = ( JSON.parse( data ) ).results[ 0 ].user_id
 
-          console.log( 'set user_id to:', ( JSON.parse( data ) ).results[ 0 ].user_id );
-        }
-        if ( !req.session.shop_id ) {
-          req.session.shop_id = ( JSON.parse( data ) ).results[ 0 ].shop_id
-          console.log( 'set user_id to:', ( JSON.parse( data ) ).results[ 0 ].shop_id );
-        }
-        console.log( data );
-        console.log( '*** SUCCESS! ***' );
-        res.send( "Success!" );
+        console.log( 'set user_id to:', ( JSON.parse( data ) ).results[ 0 ].user_id );
       }
+      if ( !req.session.shop_id ) {
+        req.session.shop_id = ( JSON.parse( data ) ).results[ 0 ].shop_id
+        console.log( 'set user_id to:', ( JSON.parse( data ) ).results[ 0 ].shop_id );
+      }
+      console.log( data );
+      console.log( '*** SUCCESS! ***' );
+      res.send( "Success!" );
     }
-  )
+  }
+)
 }
 module.exports = router

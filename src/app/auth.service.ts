@@ -6,7 +6,7 @@ import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class AuthService {
-  private authUrl = '/api/auth'
+  private authUrl = 'http://localhost:3000/api/auth'
 
   constructor(private http: Http, private router: Router) { }
 

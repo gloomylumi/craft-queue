@@ -37,8 +37,8 @@ router.get( '/', function( req, res, next ) {
         req.session.oauth.access_token,
         req.session.oauth.access_token_secret,
         function( error, data, response ) {
+          console.log( response );
           if ( error ) {
-            console.log( error );
             return reject( error )
           } else {
             let rawItemsArr = JSON.parse( data ).results
@@ -151,6 +151,7 @@ router.get( '/', function( req, res, next ) {
                   element.calcShipBy()
 
                 } )
+                localStorage.setItem( 'orders', orders )
                 res.send( orders )
                 return
               }
