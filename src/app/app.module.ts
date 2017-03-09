@@ -47,7 +47,7 @@ const appRoutes: Routes = [
   },
   {
     path: 'callback',
-    redirectTo: '/user'
+    redirectTo: '/user/orders'
   },
   {
     path: 'signup',
