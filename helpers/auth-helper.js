@@ -14,8 +14,8 @@ var secret = process.env.SECRET;
 
 
 // Set domain and callback
-var domain = __dirname + 'auth';
-var callback = "/callback";
+var domain = process.env.DOMAIN
+var callback = "/api/auth/callback";
 
 // Instantiate OAuth object
 exports.oa = new oauth.OAuth(

@@ -1,10 +1,8 @@
 'use strict'
 
 const express = require( 'express' );
-const http = require( 'http' );
 const oauth = require( 'oauth' );
 const cookieSession = require( 'cookie-session' );
-const knex = require( '../knex' );
 const router = express.Router();
 const oa = require( '../helpers/auth-helper' ).oa
 if ( process.env.NODE_ENV !== 'production' ) {
@@ -13,12 +11,12 @@ if ( process.env.NODE_ENV !== 'production' ) {
 
 
 // Root route
-router.get( '/', function( err, req, res ) {
+router.get( '/', function( req, res ) {
 
-  if ( err ) {
-    console.log( err );
-    return err
-  }
+  // if ( err ) {
+  //   console.log( "***** error ******", err );
+  //   return err
+  // }
   // If session variable has not been initialized
   if ( !req.session.oauth ) {
     console.log( '*** initializing req.session.oauth ***' );
@@ -27,7 +25,7 @@ router.get( '/', function( err, req, res ) {
 
   // If access token has not been generated
   if ( !req.session.oauth.access_token ) {
-    res.redirect( '/auth/get-access-token' );
+    res.redirect( '/api/auth/get-access-token' );
   } else {
     test( req, res );
   }
@@ -39,7 +37,6 @@ router.get( '/get-access-token', function( req, res ) {
   console.log( '*** get-access-token ***' )
 
   oa.getOAuthRequestToken( function( error, token, token_secret, results ) {
-    console.log( req.session.oauth );
     if ( error ) {
       console.log( error );
     } else {
@@ -48,6 +45,7 @@ router.get( '/get-access-token', function( req, res ) {
 
       console.log( 'Token: ' + token );
       console.log( 'Secret: ' + token_secret );
+      console.log( "redirect:", results[ "login_url" ] );
 
       res.redirect( results[ "login_url" ] );
     }
@@ -96,21 +94,21 @@ function test( req, res ) {
     req.session.oauth.access_token,
     req.session.oauth.access_token_secret,
     function( error, data, response ) {
-
+      //TODO: add validation for users without shops
+      let dataParse = JSON.parse( data )
+      console.log( dataParse );
       if ( !req.session.user_id ) {
-        req.session.user_id = ( JSON.parse( data ) ).results[ 0 ].user_id
+        req.session.user_id = dataParse.results[ 0 ].user_id
 
-        console.log( 'set user_id to:', ( JSON.parse( data ) ).results[ 0 ].user_id );
+        console.log( 'set user_id to:', dataParse.results[ 0 ].user_id );
       }
       if ( !req.session.shop_id ) {
         req.session.shop_id = ( JSON.parse( data ) ).results[ 0 ].shop_id
-        console.log( 'set user_id to:', ( JSON.parse( data ) ).results[ 0 ].shop_id );
+        console.log( 'set shop_id to:', ( JSON.parse( data ) ).results[ 0 ].shop_id );
       }
-      console.log( data );
       console.log( '*** SUCCESS! ***' );
       res.send( "Success!" );
     }
-  }
-)
+  )
 }
 module.exports = router

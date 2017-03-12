@@ -5,33 +5,33 @@ const oa = require( './auth-helper' ).oa
 const querystring = require( 'querystring' )
 const Item = require( './order-helper' ).Item
 
-const token =
 
 
-  exports.Order = class Order {
-    constructor( receipt_id, creation_tsz, name, message_from_buyer, total_price ) {
-      this.orderId = receipt_id
-      this.orderDate = new Date( parseInt( creation_tsz + "000" ) )
-      this.buyerName = name
-      this.buyerMessage = message_from_buyer
-      this.totalPrice = total_price
-      this.items = []
 
-    }
+exports.Order = class Order {
+  constructor( receipt_id, creation_tsz, name, message_from_buyer, total_price ) {
+    this.orderId = receipt_id
+    this.orderDate = new Date( parseInt( creation_tsz + "000" ) )
+    this.buyerName = name
+    this.buyerMessage = message_from_buyer
+    this.totalPrice = total_price
+    this.items = []
 
-    addItem( item ) {
-      this.items.push( item )
-    }
-    calcShipBy() {
-      let maxProcessing = 0
-      for ( var i = 0; i < this.items.length; i++ ) {
-        if ( this.items[ i ].processingTime > maxProcessing ) {
-          maxProcessing = this.items[ i ].processingTime
-        }
-      }
-      this.shipBy = new Date( this.orderDate.getFullYear(), this.orderDate.getMonth(), ( this.orderDate.getDate() + maxProcessing ) )
-    }
   }
+
+  addItem( item ) {
+    this.items.push( item )
+  }
+  calcShipBy() {
+    let maxProcessing = 0
+    for ( var i = 0; i < this.items.length; i++ ) {
+      if ( this.items[ i ].processingTime > maxProcessing ) {
+        maxProcessing = this.items[ i ].processingTime
+      }
+    }
+    this.shipBy = new Date( this.orderDate.getFullYear(), this.orderDate.getMonth(), ( this.orderDate.getDate() + maxProcessing ) )
+  }
+}
 
 exports.Item = class Item {
   constructor( transaction_id, listing_id, receipt_id, title, quantity, price, variations, url ) {

@@ -1,25 +1,25 @@
 'use strict'
 
 // Get required
-var express = require( 'express' );
+const express = require( 'express' );
 
 // Instantiate Express
-var app = express();
-const cookieParser = require( 'cookie-parser' )
-app.use( cookieParser() )
-// var cors = require( 'express-cors' )
-//
+const app = express();
+// const cookieParser = require( 'cookie-parser' )
+// app.use( cookieParser() )
+var cors = require( 'express-cors' )
+
 // app.use( cors( {
 //   allowedOrigins: [
 //     '*'
 //   ]
+// } ) )
 app.use( function( req, res, next ) {
-  res.header( 'Access-Control-Allow-Origin', '*' );
-  res.header( 'Access-Control-Allow-Methods', 'GET' );
-  res.header( 'Access-Control-Allow-Headers', 'Content-Type' );
-
+  res.header( "Access-Control-Allow-Origin", "*" );
+  res.header( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
   next();
-} )
+} );
+
 
 if ( process.env.NODE_ENV !== 'production' ) {
   require( 'dotenv' ).config();
@@ -82,7 +82,7 @@ app.use( '/api/orders', orders )
 
 if ( process.env.NODE_ENV !== 'production' ) {
   app.use( '/*', function( req, res, next ) {
-    res.sendFile( path.join( __dirname, 'index.html' ) );
+    res.sendFile( path.join( __dirname, 'src/index.html' ) );
   } );
 } else {
   app.use( '/*', function( req, res, next ) {

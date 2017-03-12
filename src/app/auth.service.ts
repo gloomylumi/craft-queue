@@ -6,7 +6,7 @@ import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class AuthService {
-  private authUrl = 'http://localhost:3000/api/auth'
+  private authUrl = '/api/auth'
 
   constructor(private http: Http, private router: Router) { }
 
@@ -14,6 +14,7 @@ export class AuthService {
     return this.http.get(this.authUrl)
       .toPromise()
       .then((response) => {
+        console.log(response)
         this.router.navigate['/user/orders']
         return
       })

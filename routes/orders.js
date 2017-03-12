@@ -151,7 +151,7 @@ router.get( '/', function( req, res, next ) {
                   element.calcShipBy()
 
                 } )
-                localStorage.setItem( 'orders', orders )
+
                 res.send( orders )
                 return
               }
