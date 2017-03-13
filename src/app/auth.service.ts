@@ -13,9 +13,9 @@ export class AuthService {
   authenticate(): any {
     return this.http.get(this.authUrl)
       .toPromise()
-      .then((response) => {
-        console.log(response)
-        return response._body
+      .then((data) => {
+        var res: any = data
+        return res._body
       })
 
   }
