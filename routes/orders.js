@@ -127,7 +127,7 @@ router.get( '/', function( req, res, next ) {
               }
               for ( var i = 0; i < itemsTrxLstData.length; i++ ) {
                 if ( itemsTrxLstData[ i ].listingId === images[ index ].listing_id ) {
-                  itemsTrxLstData[ i ].imageThumbnailUrl = images[ index ].url_75x75
+                  itemsTrxLstData[ i ].imageThumbnailUrl = images[ index ].url_170x135
                   itemsTrxLstData[ i ].imageFullUrl = images[ index ].url_fullxfull
                   itemsComplete.push( itemsTrxLstData.splice( i, 1 )[ 0 ] )
                   i--

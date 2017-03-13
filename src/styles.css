@@ -1,11 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
 @import "../node_modules/materialize-css/dist/css/materialize.css";
 .item-title{
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 500;
 }
 #splash-button{
   display:block;
   margin: auto;
   width: 164px;
+}
+.card .card-content{
+  padding: .7rem 2rem;
+}
+
+.card.horizontal .card-image {
+  max-width: 25%;
+}
+.card.horizontal .card-image img{
+  padding: 0;
+  margin: auto;
+}
+.row {
+  margin-bottom: .5rem;
 }

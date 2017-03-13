@@ -2,17 +2,28 @@
 <div class="row">
   <div class="card horizontal">
     <div class="card-image">
-      <img src="http://lorempixel.com/100/190/nature/6">
+      <img src="{{item.imageFullUrl}}" width="135">
     </div> <!-- end card image -->
     <div class="card-stacked">
       <div class="card-content">
-        div.row.s12
-        <span class="item-title activator grey-text text-darken-4">{{item.title}}</span>
-        <p>I am a very simple card. I am good at containing small bits of information.</p>
+        <div class="row">
+          <a href="{{item.transactionUrl}}" class="item-title activator grey-text text-darken-4">{{item.title}}</a>
+        </div>
+        <div *ngIf="item.variationName1 !== null" class="row">
+          <div  class="col s12">
+            <div class="variation-name">{{item.variationName1}}: {{item.variationValue1}}</div>
+          </div>
+          <div *ngIf="item.variationName2 !== null" class="col s12">
+            <div class="variation-name">{{item.variationName2}}: {{item.variationValue2}}</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="left">Qty: {{item.quantity}}</div>
+          <div class="right">{{item.price | currency:'USD':true}}</div>
+        </div>
+
       </div> <!-- end card-content -->
-      <div class="card-action">
-        <a href="#">This is a link</a>
-      </div> <!-- end card-action -->
+
     </div> <!-- end card-stacked -->
   </div> <!-- end card horizontal -->
 </div> <!-- end panel row -->

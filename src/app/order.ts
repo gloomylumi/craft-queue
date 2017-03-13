@@ -20,7 +20,6 @@ export class Order {
 }
 
 export class Item {
-  item: any
   itemId: number
   orderId: number
   listingId: number
