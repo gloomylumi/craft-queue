@@ -107,7 +107,7 @@ function test( req, res ) {
         console.log( 'set shop_id to:', ( JSON.parse( data ) ).results[ 0 ].shop_id );
       }
       console.log( '*** SUCCESS! ***' );
-      res.send( "Success!" );
+      res.redirect( '/user/orders' );
     }
   )
 }
