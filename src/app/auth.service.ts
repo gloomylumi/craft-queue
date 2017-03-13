@@ -15,8 +15,7 @@ export class AuthService {
       .toPromise()
       .then((response) => {
         console.log(response)
-        this.router.navigate['/user/orders']
-        return
+        return response._body
       })
 
   }

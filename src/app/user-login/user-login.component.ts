@@ -8,6 +8,7 @@ import { AuthService } from '../auth.service'
   styleUrls: ['./user-login.component.css']
 })
 export class UserLoginComponent implements OnInit {
+  redirectUrl: string
 
   constructor(
     private authService: AuthService
@@ -15,6 +16,7 @@ export class UserLoginComponent implements OnInit {
 
   ngOnInit() {
     this.authService.authenticate()
+      .then(data => this.redirectUrl = data)
   }
 
 }
