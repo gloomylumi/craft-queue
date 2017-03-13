@@ -7,18 +7,17 @@ const express = require( 'express' );
 const app = express();
 // const cookieParser = require( 'cookie-parser' )
 // app.use( cookieParser() )
-var cors = require( 'express-cors' )
+var cors = require( 'cors' )
 
-// app.use( cors( {
-//   allowedOrigins: [
-//     '*'
-//   ]
-// } ) )
-app.use( function( req, res, next ) {
-  res.header( "Access-Control-Allow-Origin", "*" );
-  res.header( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
-  next();
-} );
+app.use( cors( {
+  credentials: true,
+  origin: true
+} ) )
+// app.use( function( req, res, next ) {
+//   res.header( "Access-Control-Allow-Origin", "*" );
+//   res.header( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
+//   next();
+// } );
 
 
 if ( process.env.NODE_ENV !== 'production' ) {
@@ -44,18 +43,18 @@ app.use( bodyParser.urlencoded( {
 } ) )
 
 // // Setup the Express server
-// const forceSSL = function() {
-//   return function( req, res, next ) {
-//     if ( req.headers[ 'x-forwarded-proto' ] !== 'https' ) {
-//       return res.redirect(
-//         [ 'https://', req.get( 'Host' ), req.url ].join( '' )
-//       );
-//     }
-//     next();
-//   }
-// }
-//
-// app.use( forceSSL() )
+const forceSSL = function() {
+  return function( req, res, next ) {
+    if ( req.headers[ 'x-forwarded-proto' ] !== 'https' ) {
+      return res.redirect(
+        [ 'https://', req.get( 'Host' ), req.url ].join( '' )
+      );
+    }
+    next();
+  }
+}
+
+app.use( forceSSL() )
 
 const cookieSession = require( 'cookie-session' );
 
