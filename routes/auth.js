@@ -47,7 +47,7 @@ router.get( '/get-access-token', function( req, res ) {
       console.log( 'Secret: ' + token_secret );
       console.log( "redirect:", results[ "login_url" ] );
 
-      res.send( results[ "login_url" ] );
+      res.redirect( results[ "login_url" ] );
     }
   } );
 
