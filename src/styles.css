@@ -1,11 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
 @import "../node_modules/materialize-css/dist/css/materialize.css";
+nav {
+  margin-bottom: 3rem;
+}
 .hero{
+  padding-top: 3rem;
   background-image: url(/assets/jo-szczepanska-57782.jpg);
   background-size: 100%;
-  height: 100%;
-  width: 100%;
-  min-height: 700px;
+  /*height: 100%;
+  width: 100%;*/
+  min-height: 28rem;
+}
+.hero-text{
+  text-shadow: 1px 1px #254640
 }
 .item-title{
   font-size: 1.1rem;
@@ -14,6 +21,7 @@
 #splash-button{
   display:block;
   margin: auto;
+  margin-top: 1rem;
   width: 164px;
 }
 .card .card-content{
