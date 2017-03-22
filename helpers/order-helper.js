@@ -23,12 +23,13 @@ exports.Order = class Order {
     this.items.push( item )
   }
   calcShipBy() {
-    let maxProcessing = 0
+    let maxProcessingBusinessDays = 0
     for ( var i = 0; i < this.items.length; i++ ) {
-      if ( this.items[ i ].processingTime > maxProcessing ) {
-        maxProcessing = this.items[ i ].processingTime
+      if ( this.items[ i ].processingTime > maxProcessingBusinessDays ) {
+        maxProcessingBusinessDays = this.items[ i ].processingTime
       }
     }
+    let maxProcessing = maxProcessingBusinessDays + ( 2 * Math.ceil( maxProcessingBusinessDays / 5 ) )
     this.shipBy = new Date( this.orderDate.getFullYear(), this.orderDate.getMonth(), ( this.orderDate.getDate() + maxProcessing ) )
   }
 }

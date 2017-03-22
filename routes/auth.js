@@ -27,7 +27,8 @@ router.get( '/', function( req, res ) {
   if ( !req.session.oauth.access_token ) {
     res.redirect( '/api/auth/get-access-token' );
   } else {
-    res.redirect( '/user/orders' )
+    // res.redirect( '/user/orders' )
+    res.send( "SUCCESS" )
   }
 } );
 
@@ -48,6 +49,7 @@ router.get( '/get-access-token', function( req, res ) {
       console.log( "redirect:", results[ "login_url" ] );
 
       res.send( results[ "login_url" ] );
+      // res.redirect( results[ "login_url" ] )
     }
   } );
 

@@ -40,18 +40,18 @@ app.use( bodyParser.urlencoded( {
 } ) )
 
 // // Setup the Express server
-const forceSSL = function() {
-  return function( req, res, next ) {
-    if ( req.headers[ 'x-forwarded-proto' ] !== 'https' ) {
-      return res.redirect(
-        [ 'https://', req.get( 'Host' ), req.url ].join( '' )
-      );
-    }
-    next();
-  }
-}
+// const forceSSL = function() {
+//   return function( req, res, next ) {
+//     if ( req.headers[ 'x-forwarded-proto' ] !== 'https' ) {
+//       return res.redirect(
+//         [ 'https://', req.get( 'Host' ), req.url ].join( '' )
+//       );
+//     }
+//     next();
+//   }
+// }
 
-app.use( forceSSL() )
+// app.use( forceSSL() )
 
 const cookieSession = require( 'cookie-session' );
 
@@ -69,9 +69,9 @@ if ( process.env.NODE_ENV !== 'production' ) {
   app.use( express.static( path.join( __dirname, 'dist' ) ) );
 }
 
-app.options( '*', cors( {
-  origin: true
-} ) );
+// app.options( '*', cors( {
+//   origin: true
+// } ) );
 // API ROUTES
 const auth = require( './routes/auth' );
 app.use( '/api/auth', auth )
