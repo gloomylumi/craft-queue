@@ -130,6 +130,15 @@ router.get( '/', function( req, res, next ) {
                   itemsTrxLstData[ i ].imageThumbnailUrl = images[ index ].url_170x135
                   itemsTrxLstData[ i ].imageFullUrl = images[ index ].url_fullxfull
                   itemsComplete.push( itemsTrxLstData.splice( i, 1 )[ 0 ] )
+                  // insert listing data into database
+                  knex( 'listings' )
+                    .insert( {
+                      listing_id: parseInt( itemsTrxLstData[ i ].listingId ),
+                      shop_id: parseInt( shop_id ),
+                      processing_time: itemsTrxLstData[ i ].processingTime,
+                      image_thumbnail_url: itemsTrxLstData[ i ].imageThumbnailUrl,
+                      image_full_url: itemsTrxLstData[ i ].imageFullUrl
+                    } )
                   i--
                 }
               }
