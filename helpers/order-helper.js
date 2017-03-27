@@ -64,17 +64,17 @@ exports.Item = class Item {
 
 }
 
-exports.timeoutQ = function timeoutQueue( array, etsyRequests, callback, callbackArray, min = 0, max = 6 ) {
+exports.timeoutQ = function timeoutQueue( array, etsyRequests, callback, callbackArray, min = 0, max = 4 ) {
   console.log( "recursion" );
   let arrayChunk = array.slice( min, max )
   if ( min > array.length ) {
     return callback( callbackArray )
   } else {
     etsyRequests( arrayChunk )
-    min += 6
-    max += 6
+    min += 4
+    max += 4
     return setTimeout( function() {
       timeoutQueue( array, etsyRequests, callback, callbackArray, min, max )
-    }, 1000 )
+    }, 600 )
   }
 }

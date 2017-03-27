@@ -1,7 +1,7 @@
 'use strict'
 
 exports.up = function( knex, Promise ) {
-  knex.schema.createTable( 'listings', function( table ) {
+  return knex.schema.createTable( 'listings', function( table ) {
     table.integer( 'listing_id' ).primary().notNullable()
     table.integer( 'shop_id' ).notNullable()
     table.integer( 'processing_time' ).defaultTo( 0 )
@@ -12,5 +12,5 @@ exports.up = function( knex, Promise ) {
 };
 
 exports.down = function( knex, Promise ) {
-  knex.schema.dropTable( 'listings' )
+  return knex.schema.dropTable( 'listings' )
 };
