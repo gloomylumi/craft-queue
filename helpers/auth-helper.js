@@ -14,7 +14,7 @@ var secret = process.env.SECRET;
 
 
 // Set domain and callback
-var domain = "http://localhost:3000";
+var domain = process.env.DOMAIN;
 var callback = "/api/auth/callback";
 
 // Instantiate OAuth object
