@@ -63,12 +63,16 @@ router.get( '/', function( req, res, next ) {
                 let listingId = transaction.listing_id
                 if ( uniqueListingIdArr.indexOf( listingId ) === -1 ) {
                   uniqueListingIdArr.push( listingId )
+
+                  let imageId = transaction.image_listing_id
+                  uniqueImageListingIdArr.push( [ listingId, imageId ] )
                 }
+
                 // push unique image ids to array
-                let imageId = transaction.image_listing_id
-                if ( imageListingIdArr.indexOf( imageId ) === -1 ) {
-                  imageListingIdArr.push( imageId )
-                }
+                // let imageId = transaction.image_listing_id
+                // if ( imageListingIdArr.indexOf( imageId ) === -1 ) {
+                //   imageListingIdArr.push( imageId )
+                // }
 
 
                 let item = new Item( transaction.transaction_id, transaction.listing_id, transaction.receipt_id, transaction.title, transaction.quantity, transaction.price, transaction.variations, transaction.url )
@@ -97,11 +101,11 @@ router.get( '/', function( req, res, next ) {
                 }
                 console.log( "uniqueListingIdArr:", uniqueListingIdArr );
                 // now that we have only the unique values for images and listings, modify the uniqueImageListingIdArr to explicity correlate to listingIds
-                for ( var i = 0; i < uniqueListingIdArr.length; i++ ) {
-                  let imageId = imageListingIdArr[ i ]
-
-                  uniqueImageListingIdArr[ i ] = [ uniqueListingIdArr[ i ], imageId ]
-                }
+                // for ( var i = 0; i < uniqueListingIdArr.length; i++ ) {
+                //   let imageId = imageListingIdArr[ i ]
+                //
+                //   uniqueImageListingIdArr[ i ] = [ uniqueListingIdArr[ i ], imageId ]
+                // }
                 console.log( "uniqueImageListingIdArr:", uniqueImageListingIdArr );
                 // get listing data from the database
                 knex( 'listings' )
@@ -111,9 +115,6 @@ router.get( '/', function( req, res, next ) {
                     var dbListings = data.map( element => camelizeKeys( element ) )
                     // cross-reference listings with items and splice the items into the complete items array
                     addDbListingsToItems( dbListings, itemsTrxData, itemsComplete )
-                    console.log( itemsComplete );
-
-
                   } )
                   .catch( err => next( err ) )
               } )
@@ -146,72 +147,76 @@ router.get( '/', function( req, res, next ) {
         .then( ( data ) => {
 
           ( function() {
+            if ( uniqueListingIdArr.length !== 0 ) {
+              timeoutQueue( uniqueListingIdArr, etsyListingRequests, getImages, listings )
 
-            timeoutQueue( uniqueListingIdArr, etsyListingRequests, getImages, listings )
 
-
-            function getImages( array ) {
-              timeoutQueue( uniqueImageListingIdArr, etsyImageListingRequests, addListingDataToItems, listings )
-            }
-
-            function addListingDataToItems( listings, index = 0 ) {
-              if ( itemsTrxData.length === 0 ) {
-                return addImageDatatoItems( images )
+              function getImages( array ) {
+                timeoutQueue( uniqueImageListingIdArr, etsyImageListingRequests, addListingDataToItems, listings )
               }
-              if ( index > listings.length - 1 ) {
-                itemsTrxLstData.push( itemsTrxData.shift() )
-                return addListingDataToItems( listings, index )
-              }
-              for ( var i = 0; i < itemsTrxData.length; i++ ) {
-                if ( itemsTrxData[ i ].listingId === listings[ index ].listing_id ) {
-                  itemsTrxData[ i ].processingTime = listings[ index ].processing_max
-                  itemsTrxLstData.push( itemsTrxData.splice( i, 1 )[ 0 ] )
-                  i--
+
+              function addListingDataToItems( listings, index = 0 ) {
+                if ( itemsTrxData.length === 0 ) {
+                  return addImageDatatoItems( images )
                 }
-              }
-              index++
-              return addListingDataToItems( listings, index )
-
-            }
-
-            function addImageDatatoItems( images, index = 0 ) {
-              if ( itemsTrxLstData.length === 0 ) {
-                return addItemsToOrders()
-              }
-              if ( index > images.length - 1 ) {
-                itemsComplete.push( itemsTrxLstData.shift() )
-                return addListingDataToItems( listings, index )
-              }
-              for ( var i = 0; i < itemsTrxLstData.length; i++ ) {
-                if ( itemsTrxLstData[ i ].listingId === images[ index ].listing_id ) {
-                  itemsTrxLstData[ i ].imageThumbnailUrl = images[ index ].url_170x135
-                  itemsTrxLstData[ i ].imageFullUrl = images[ index ].url_fullxfull
-                  // check if the listing has been added to database
-                  if ( listingsAddedToDb.indexOf( itemsTrxLstData[ i ].listingId ) === -1 ) {
-                    // insert listing data into database
-                    knex( 'listings' )
-                      .insert( {
-                        listing_id: itemsTrxLstData[ i ].listingId,
-                        shop_id: shop_id,
-                        processing_time: itemsTrxLstData[ i ].processingTime,
-                        image_thumbnail_url: itemsTrxLstData[ i ].imageThumbnailUrl,
-                        image_full_url: itemsTrxLstData[ i ].imageFullUrl
-                      } )
-                      .then( ( data ) => {
-                        console.log( "inserted:", data );
-                        listingsAddedToDb.push( itemsTrxLstData[ i ].listingId )
-                      } )
-                      .catch( ( err ) => next( err ) )
+                if ( index > listings.length - 1 ) {
+                  itemsTrxLstData.push( itemsTrxData.shift() )
+                  return addListingDataToItems( listings, index )
+                }
+                for ( var i = 0; i < itemsTrxData.length; i++ ) {
+                  if ( itemsTrxData[ i ].listingId === listings[ index ].listing_id ) {
+                    itemsTrxData[ i ].processingTime = listings[ index ].processing_max
+                    itemsTrxLstData.push( itemsTrxData.splice( i, 1 )[ 0 ] )
+                    i--
                   }
-
-
-                  itemsComplete.push( itemsTrxLstData.splice( i, 1 )[ 0 ] )
-                  i--
                 }
+                index++
+                return addListingDataToItems( listings, index )
+
               }
-              index++
-              return addImageDatatoItems( images, index )
+
+              function addImageDatatoItems( images, index = 0 ) {
+                if ( itemsTrxLstData.length === 0 ) {
+                  return addItemsToOrders()
+                }
+                if ( index > images.length - 1 ) {
+                  itemsComplete.push( itemsTrxLstData.shift() )
+                  return addListingDataToItems( listings, index )
+                }
+                for ( var i = 0; i < itemsTrxLstData.length; i++ ) {
+                  if ( itemsTrxLstData[ i ].listingId === images[ index ].listing_id ) {
+                    itemsTrxLstData[ i ].imageThumbnailUrl = images[ index ].url_170x135
+                    itemsTrxLstData[ i ].imageFullUrl = images[ index ].url_fullxfull
+                    // check if the listing has been added to database
+                    if ( listingsAddedToDb.indexOf( itemsTrxLstData[ i ].listingId ) === -1 ) {
+                      // insert listing data into database
+                      let listingId = itemsTrxLstData[ i ].listingId
+                      knex( 'listings' )
+                        .insert( {
+                          listing_id: itemsTrxLstData[ i ].listingId,
+                          shop_id: shop_id,
+                          processing_time: itemsTrxLstData[ i ].processingTime,
+                          image_thumbnail_url: itemsTrxLstData[ i ].imageThumbnailUrl,
+                          image_full_url: itemsTrxLstData[ i ].imageFullUrl
+                        } )
+                        .then( ( data ) => {
+                          listingsAddedToDb.push( listingId )
+                        } )
+                        .catch( ( err ) => next( err ) )
+                    }
+
+
+                    itemsComplete.push( itemsTrxLstData.splice( i, 1 )[ 0 ] )
+                    i--
+                  }
+                }
+                index++
+                return addImageDatatoItems( images, index )
+              }
+            } else {
+              addItemsToOrders()
             }
+
 
             function addItemsToOrders( index = 0 ) {
               if ( itemsComplete.length === 0 ) {
