@@ -29,8 +29,16 @@ exports.Order = class Order {
         maxProcessingBusinessDays = this.items[ i ].processingTime
       }
     }
+
     let maxProcessing = maxProcessingBusinessDays + ( 2 * Math.ceil( maxProcessingBusinessDays / 5 ) )
-    this.shipBy = new Date( this.orderDate.getFullYear(), this.orderDate.getMonth(), ( this.orderDate.getDate() + maxProcessing ) )
+    let shippingDate = new Date( this.orderDate.getFullYear(), this.orderDate.getMonth(), ( this.orderDate.getDate() + maxProcessing ) )
+    if ( shippingDate.getDay() === 0 ) {
+      this.shipBy = new Date( this.orderDate.getFullYear(), this.orderDate.getMonth(), ( this.orderDate.getDate() + maxProcessing - 2 ) )
+    } else if ( shippingDate.getDay() === 6 ) {
+      this.shipBy = new Date( this.orderDate.getFullYear(), this.orderDate.getMonth(), ( this.orderDate.getDate() + maxProcessing - 1 ) )
+    } else {
+      this.shipBy = shippingDate
+    }
   }
 }
 
