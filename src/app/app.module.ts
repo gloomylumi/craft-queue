@@ -9,7 +9,7 @@ import { MaterializeModule } from 'angular2-materialize';
 
 import {AuthService} from './auth.service'
 import {OrdersService} from './orders.service'
-import {OrdersResolver} from './orders-resolver.service'
+import {OrdersResolverService} from './orders-resolver.service'
 
 import { AppComponent } from './app.component';
 import { SplashComponent } from './splash/splash.component';
@@ -21,7 +21,6 @@ import { OrderCardComponent } from './order-card/order-card.component';
 import { MenuDrawerComponent } from './menu-drawer/menu-drawer.component';
 import { OrderItemComponent } from './order-item/order-item.component';
 import { AuthNavComponent } from './auth-nav/auth-nav.component';
-import { OrderBy } from './order-by.pipe';
 
 const appRoutes: Routes = [
   // {path: '', component: PublicNavComponent}
@@ -72,7 +71,6 @@ const appRoutes: Routes = [
     MenuDrawerComponent,
     OrderItemComponent,
     AuthNavComponent,
-    OrderBy
   ],
   imports: [
     BrowserModule,
@@ -85,7 +83,7 @@ const appRoutes: Routes = [
   providers: [
     AuthService,
     OrdersService,
-    OrdersResolver
+    OrdersResolverService
   ],
   bootstrap: [AppComponent]
 })

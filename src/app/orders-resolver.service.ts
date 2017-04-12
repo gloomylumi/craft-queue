@@ -6,7 +6,7 @@ import { Order } from './order'
 import { OrdersService} from './orders.service'
 
 @Injectable()
-export class OrdersResolver implements Resolve<Order[]> {
+export class OrdersResolverService implements Resolve<Order[]> {
 
   constructor(private os: OrdersService, private router: Router) { }
 
