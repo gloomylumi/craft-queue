@@ -222,8 +222,11 @@ router.get( '/', function( req, res, next ) {
               if ( itemsComplete.length === 0 ) {
                 orders.forEach( function( element ) {
                   element.calcShipBy()
-
+                  //TODO: delete time variable and console logs
+                  let time = element.orderDate
+                  console.log( "name:", element.buyerName, "order time:", time.toString(), "timezone offset:", time.getTimezoneOffset() / 60 );
                 } )
+
                 res.send( [ orders, itemsComplete ] )
                 return
               }
