@@ -1,7 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
 @import "../node_modules/materialize-css/dist/css/materialize.css";
+@import url('https://fonts.googleapis.com/css?family=Bree+Serif|Hind');
 nav {
   margin-bottom: 3rem;
+}
+.brand-logo {
+  font-family: 'Bree Serif', serif;
+}
+body{
+  font-family: 'Hind', sans-serif;
+}
+h1, h2, h3, h4, h5, h6, .item-title {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
 }
 .hero{
   padding-top: 3rem;
@@ -16,7 +27,7 @@ nav {
 }
 .item-title{
   font-size: 1.1rem;
-  font-weight: 500;
+  line-height: 1.4rem;
 }
 #splash-button{
   display:block;
@@ -24,8 +35,8 @@ nav {
   margin-top: 1rem;
   width: 164px;
 }
-.card .card-content{
-  padding: .7rem 2rem;
+.card .card-content {
+  padding: .7rem 1rem;
 }
 
 .card.horizontal .card-image {
@@ -35,6 +46,21 @@ nav {
   padding: 0;
   margin: auto;
 }
+.card-panel {
+  padding: .8rem 2rem .4rem 2rem;
+}
 .row {
-  margin-bottom: .5rem;
+  margin-bottom: .3rem;
+}
+
+.variation {
+  padding: 0;
+  font-weight: bolder;
+}
+.variation, .item-title {
+  padding-bottom: .4rem;
+}
+
+.card-panel p {
+  margin: .3rem 0;
 }

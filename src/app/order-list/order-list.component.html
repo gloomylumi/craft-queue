@@ -6,8 +6,8 @@
       <div class="card-panel grey lighten-4">
 
         <div class="row">
-          <div class="col s12 m6">{{order.buyerName}}</div>
-          <div class="deadline col s12 m6 right-align">{{order.shipBy | date: "fullDate"}}</div>
+          <div class="left">{{order.buyerName}}</div>
+          <div class="deadline right">{{order.shipBy | date: "fullDate"}}</div>
         </div>
 
         <div *ngIf="order.buyerMessage !== null && order.buyerMessage !== ''" class="row">
