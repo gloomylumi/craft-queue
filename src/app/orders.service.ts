@@ -15,7 +15,7 @@ export class OrdersService {
       .toPromise()
       .then(response => {
         console.log("response:", response.json())
-        let sorted: Array<Order> = this.quickSortByShipDate(response.json()[0])
+        let sorted: Array<Order> = this.quickSortByShipDate(response.json())
         console.log(sorted)
         return sorted
       })
@@ -23,12 +23,12 @@ export class OrdersService {
 
   }
 
-  quickSortByShipDate(list: Order[]): Order[] {
-    if (list.length == 0) {
+  quickSortByShipDate(list: Array<Order>): Order[] {
+    if (list.length === 0) {
       return [];
     }
     var lesser = []; var greater = []; var pivot = list[0];
-    var pivotParam = list[0].shipBy.valueOf();
+    var pivotParam: number = list[0].shipBy.valueOf();
     for (var i = 1; i < list.length; i++) {
       if (list[i].shipBy.valueOf() < pivotParam) {
         lesser.push(list[i]);

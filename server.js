@@ -60,8 +60,8 @@ app.use( cookieSession( {
   secret: 'supersecret'
 } ) );
 
-
 const path = require( 'path' );
+
 if ( process.env.NODE_ENV !== 'production' ) {
 
   app.use( express.static( path.join( __dirname, 'src' ) ) );
@@ -72,6 +72,7 @@ if ( process.env.NODE_ENV !== 'production' ) {
 // app.options( '*', cors( {
 //   origin: true
 // } ) );
+
 // API ROUTES
 const auth = require( './routes/auth' );
 app.use( '/api/auth', auth )
