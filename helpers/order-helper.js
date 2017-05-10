@@ -79,8 +79,8 @@ exports.timeoutQ = function timeoutQueue( array, etsyRequests, callback, callbac
     return callback( callbackArray )
   } else {
     etsyRequests( arrayChunk )
-    min += 4
-    max += 4
+    min += 5
+    max += 5
     return setTimeout( function() {
       timeoutQueue( array, etsyRequests, callback, callbackArray, min, max )
     }, 600 )

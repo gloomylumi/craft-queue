@@ -184,6 +184,7 @@ router.get( '/', function( req, res, next ) {
                   return addListingDataToItems( listings, index )
                 }
                 for ( var i = 0; i < itemsTrxLstData.length; i++ ) {
+
                   if ( itemsTrxLstData[ i ].listingId === images[ index ].listing_id ) {
                     itemsTrxLstData[ i ].imageThumbnailUrl = images[ index ].url_170x135
                     itemsTrxLstData[ i ].imageFullUrl = images[ index ].url_fullxfull
@@ -290,7 +291,7 @@ router.get( '/', function( req, res, next ) {
                         return reject( error )
                       } else {
                         images.push( JSON.parse( data ).results[ 0 ] )
-
+                        console.log( JSON.parse( data ).results[ 0 ] );
                         return resolve( images )
 
                       }
