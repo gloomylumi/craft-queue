@@ -34,7 +34,7 @@ router.get( '/', function( req, res, next ) {
   new Promise( ( resolve, reject ) => {
       oa.getProtectedResource( //get transaction items
         "https://openapi.etsy.com/v2" + `/shops/${shop_id}/transactions?` + querystring.stringify( {
-          limit: 99
+          limit: 75
         } ),
         "GET",
         req.session.oauth.access_token,
